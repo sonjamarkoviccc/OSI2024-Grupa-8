@@ -9,13 +9,15 @@ class UlaznaKartica {
     private:
         char* tablica;
         char* pocetnoVrijeme;
-        char zona[10];
+        char* zona;
         char* dan;
 
     public:
-        void setTablica(char* tab)
+        void setTablica()
         {
-            tablica = strdup(tab);
+            tablica = (char*)malloc(10*sizeof(char));
+            printf("Unesite tablicu: ");
+            scanf("%s", tablica);
         }
 
         void setPocetnoVrijeme()
@@ -32,8 +34,9 @@ class UlaznaKartica {
 
         void setZona()
         {
+            zona = (char*)malloc(6*sizeof(char));
             printf("Unesite zonu: ");
-            std::cin.getline(zona, 10);
+            scanf("%s", zona);
         }
 
         void setDan()
@@ -47,4 +50,9 @@ class UlaznaKartica {
 
             dan = strdup(output);
         }
+
+        char* getTablica() const {return tablica;}
+        char* getPocetnoVrijeme() const {return pocetnoVrijeme;}
+        char* getDan() const {return dan;}
+        char* getZona() const {return zona;}
 };
