@@ -13,42 +13,51 @@ class UlaznaKartica {
         char* dan;
 
     public:
-        void setTablica()
+        UlaznaKartica()
+        {
+            tablica = nullptr;
+            pocetnoVrijeme = nullptr;
+            zona = nullptr;
+            dan = nullptr;
+        }
+        ~UlaznaKartica()
+        {
+            free(tablica);
+            free(zona);
+            free(dan);
+            free(pocetnoVrijeme);
+        }
+        void setKartica()
         {
             tablica = (char*)malloc(10*sizeof(char));
             printf("Unesite tablicu: ");
             scanf("%s", tablica);
-        }
 
-        void setPocetnoVrijeme()
-        {
-            time_t timestamp = time(NULL);
-            struct tm datetime = *localtime(&timestamp);
+            time_t vrijeme = time(NULL);
+            struct tm datetime = *localtime(&vrijeme);
+            char vr[10];
+            strftime(vr, sizeof(vr), "%H:%M:%S", &datetime);
+            pocetnoVrijeme = strdup(vr);
 
-            char output[10];
-
-            strftime(output, 50, "%H:%M:%S", &datetime);
-
-            pocetnoVrijeme = strdup(output);
-        }
-
-        void setZona()
-        {
             zona = (char*)malloc(6*sizeof(char));
             printf("Unesite zonu: ");
             scanf("%s", zona);
-        }
 
-        void setDan()
-        {
-            time_t timestamp = time(NULL);
-            struct tm datetime = *localtime(&timestamp);
+            time_t day = time(NULL);
+            struct tm datum = *localtime(&day);
+            char d[5];
+            strftime(d, sizeof(d), "%a", &datum);
+            dan = strdup(d);
 
-            char output[5];
+            FILE* spisakTablica = fopen("../files/tablice.txt", "a");
+            if (!spisakTablica) {
+                perror("Error opening file");
+                return;
+            }
+            fseek(spisakTablica, 0, SEEK_END);
+            fprintf(spisakTablica, "%s %s %s %s\n", tablica, zona, dan, pocetnoVrijeme);
 
-            strftime(output, 50, "%a", &datetime);
-
-            dan = strdup(output);
+            fclose(spisakTablica);
         }
 
         char* getTablica() const {return tablica;}
