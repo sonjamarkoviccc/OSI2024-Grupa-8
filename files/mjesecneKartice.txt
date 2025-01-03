@@ -1,4 +1,0 @@
-IME             PREZIME             ZONA    D.IZDAJE    D.ISTEKA
-================================================================
-Marko           Markovic            ZONA1   030125      030225      
-Petar           Petrovic            ZONA2   030125      030225      
