@@ -51,7 +51,7 @@ class UlaznaKartica {
 
             FILE* spisakTablica = fopen("../files/tablice.txt", "a");
             if (!spisakTablica) {
-                perror("Error opening file");
+                perror("Greska pri otvaranju datoteke.");
                 return;
             }
             fseek(spisakTablica, 0, SEEK_END);
