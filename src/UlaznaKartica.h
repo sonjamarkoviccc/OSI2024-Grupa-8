@@ -1,67 +1,47 @@
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <fstream>
 #include <ctime>
-
+#include <string>
 
 class UlaznaKartica {
-    private:
-        char* tablica;
-        char* pocetnoVrijeme;
-        char* zona;
-        char* dan;
+private:
+    std::string tablica;
+    std::string pocetnoVrijeme;
+    std::string zona;
+    std::string dan;
 
-    public:
-        UlaznaKartica()
-        {
-            tablica = nullptr;
-            pocetnoVrijeme = nullptr;
-            zona = nullptr;
-            dan = nullptr;
+public:
+    UlaznaKartica() = default;
+    ~UlaznaKartica() = default;
+
+    void setKartica()
+    {
+        std::cout << "Unesite tablicu: ";
+        std::cin >> tablica;
+
+        time_t vrijeme = time(nullptr);
+        struct tm datetime = *localtime(&vrijeme);
+        char vr[10];
+        strftime(vr, sizeof(vr), "%H:%M:%S", &datetime);
+        pocetnoVrijeme = vr;
+
+        std::cout << "Unesite zonu: ";
+        std::cin >> zona;
+
+        char d[5];
+        strftime(d, sizeof(d), "%a", &datetime);
+        dan = d;
+
+        std::ofstream spisakTablica("../files/tablice.txt", std::ios::app);
+        if (!spisakTablica) {
+            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
+            return;
         }
-        ~UlaznaKartica()
-        {
-            free(tablica);
-            free(zona);
-            free(dan);
-            free(pocetnoVrijeme);
-        }
-        void setKartica()
-        {
-            tablica = (char*)malloc(10*sizeof(char));
-            printf("Unesite tablicu: ");
-            scanf("%s", tablica);
+        spisakTablica << tablica << " " << zona << " " << dan << " " << pocetnoVrijeme << "\n";
+    }
 
-            time_t vrijeme = time(NULL);
-            struct tm datetime = *localtime(&vrijeme);
-            char vr[10];
-            strftime(vr, sizeof(vr), "%H:%M:%S", &datetime);
-            pocetnoVrijeme = strdup(vr);
-
-            zona = (char*)malloc(6*sizeof(char));
-            printf("Unesite zonu: ");
-            scanf("%s", zona);
-
-            time_t day = time(NULL);
-            struct tm datum = *localtime(&day);
-            char d[5];
-            strftime(d, sizeof(d), "%a", &datum);
-            dan = strdup(d);
-
-            FILE* spisakTablica = fopen("../files/tablice.txt", "a");
-            if (!spisakTablica) {
-                perror("Greska pri otvaranju datoteke.");
-                return;
-            }
-            fseek(spisakTablica, 0, SEEK_END);
-            fprintf(spisakTablica, "%s %s %s %s\n", tablica, zona, dan, pocetnoVrijeme);
-
-            fclose(spisakTablica);
-        }
-
-        char* getTablica() const {return tablica;}
-        char* getPocetnoVrijeme() const {return pocetnoVrijeme;}
-        char* getDan() const {return dan;}
-        char* getZona() const {return zona;}
+    std::string getTablica() const { return tablica; }
+    std::string getPocetnoVrijeme() const { return pocetnoVrijeme; }
+    std::string getDan() const { return dan; }
+    std::string getZona() const { return zona; }
 };
