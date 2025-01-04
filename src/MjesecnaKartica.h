@@ -11,14 +11,12 @@ class MjesecnaKartica
         char* prezime;
         char* datumIzdaje;
         char* datumIsteka;
-        char* zona;
 
     public:
         MjesecnaKartica()
         {
             datumIzdaje = nullptr;
             datumIsteka = nullptr;
-            zona = nullptr;
             ime = nullptr;
             prezime = nullptr;
         }
@@ -28,20 +26,13 @@ class MjesecnaKartica
             free(datumIsteka);
             free(ime);
             free(prezime);
-            free(zona);
         }
 
         void izdajaKartice()
         {
-            if (datumIzdaje) free(datumIzdaje);
-            if (datumIsteka) free(datumIsteka);
-            if (zona) free(zona);
-            if (ime) free(ime);
-            if (prezime) free(prezime);
 
             datumIzdaje = (char*)malloc(10 * sizeof(char));
             datumIsteka = (char*)malloc(10 * sizeof(char));
-            zona = (char*)malloc(10 * sizeof(char));
             ime = (char*)malloc(20 * sizeof(char));
             prezime = (char*)malloc(20 * sizeof(char));
 
@@ -65,17 +56,13 @@ class MjesecnaKartica
             fgets(prezime, 20, stdin);
             prezime[strcspn(prezime, "\n")] = '\0';
 
-            printf("Unesite zonu: ");
-            fgets(zona, 10, stdin);
-            zona[strcspn(zona, "\n")] = '\0';
-
             FILE* bazaMjesecne = fopen("../files/mjesecneKartice.txt", "a");
             if (!bazaMjesecne) {
                 perror("Greska pri otvaranju datoteke.");
                 return;
             }
             fseek(bazaMjesecne, 0, SEEK_END);
-            fprintf(bazaMjesecne, "%-16s%-20s%-8s%-12s%-12s\n", ime, prezime, zona, datumIzdaje, datumIsteka);
+            fprintf(bazaMjesecne, "%-16s%-20s%-12s%-12s\n", ime, prezime, datumIzdaje, datumIsteka);
 
             fclose(bazaMjesecne);
         }
@@ -105,7 +92,6 @@ class MjesecnaKartica
 
         char* getIme () const { return ime;}
         char* getPrezime () const { return prezime;}
-        char* getZona () const { return zona;}
         char* getDatumIzdaje () const { return datumIzdaje;}
         char* getDatumIsteka () const { return datumIsteka;}
 
