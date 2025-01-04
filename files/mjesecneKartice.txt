@@ -1,4 +1,2 @@
 IME             PREZIME             D.IZDAJE    D.ISTEKA
 ========================================================
-Marko           Markovic            040125      040225      
-Petar           Petrovic            040125      040225      

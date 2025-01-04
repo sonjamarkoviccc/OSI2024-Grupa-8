@@ -1,137 +1,73 @@
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <fstream>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
-class MjesecnaKartica
-{
-    private:
-        char* ime;
-        char* prezime;
-        char* datumIzdaje;
-        char* datumIsteka;
+class MjesecnaKartica {
+private:
+    std::string ime;
+    std::string prezime;
+    std::string datumIzdaje;
+    std::string datumIsteka;
 
-    public:
-        MjesecnaKartica()
-        {
-            datumIzdaje = nullptr;
-            datumIsteka = nullptr;
-            ime = nullptr;
-            prezime = nullptr;
+public:
+    MjesecnaKartica() = default;
+
+    ~MjesecnaKartica() = default;
+
+    void izdajaKartice()
+    {
+        time_t dIzdaje = time(nullptr);
+        struct tm datum1 = *localtime(&dIzdaje);
+
+        std::ostringstream temp1;
+        temp1 << std::setw(2) << std::setfill('0') << datum1.tm_mday
+              << std::setw(2) << std::setfill('0') << datum1.tm_mon + 1
+              << std::to_string(datum1.tm_year + 1900).substr(2);
+        datumIzdaje = temp1.str();
+
+        datum1.tm_mon += 1;
+        mktime(&datum1);
+
+        std::ostringstream temp2;
+        temp2 << std::setw(2) << std::setfill('0') << datum1.tm_mday
+              << std::setw(2) << std::setfill('0') << datum1.tm_mon + 1
+              << std::to_string(datum1.tm_year + 1900).substr(2);
+        datumIsteka = temp2.str();
+
+        std::cout << "Unesite ime: ";
+        std::getline(std::cin, ime);
+
+        std::cout << "Unesite prezime: ";
+        std::getline(std::cin, prezime);
+
+        std::ofstream bazaMjesecne("../files/mjesecneKartice.txt", std::ios::app);
+        if (!bazaMjesecne) {
+            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
+            return;
         }
-        ~MjesecnaKartica()
-        {
-            free(datumIzdaje);
-            free(datumIsteka);
-            free(ime);
-            free(prezime);
-        }
+        bazaMjesecne << std::left << std::setw(16) << ime
+                     << std::setw(20) << prezime
+                     << std::setw(12) << datumIzdaje
+                     << std::setw(12) << datumIsteka << '\n';
+    }
 
-        void izdajaKartice()
-        {
+    bool jeValidna() const {
+        struct tm datum = {};
+        datum.tm_mday = std::stoi(datumIsteka.substr(0, 2));
+        datum.tm_mon = std::stoi(datumIsteka.substr(2, 2)) - 1;
+        datum.tm_year = std::stoi("20" + datumIsteka.substr(4, 2)) - 1900;
 
-            datumIzdaje = (char*)malloc(10 * sizeof(char));
-            datumIsteka = (char*)malloc(10 * sizeof(char));
-            ime = (char*)malloc(20 * sizeof(char));
-            prezime = (char*)malloc(20 * sizeof(char));
+        time_t istDate = mktime(&datum);
+        time_t now = time(nullptr);
 
-            time_t dIzdaje = time(NULL);
-            char temp1[20];
-            struct tm datum1 = *localtime(&dIzdaje);
-            strftime(temp1, sizeof(temp1), "%d%m%y", &datum1);
-            datumIzdaje = strdup(temp1);
+        return now <= istDate;
+    }
 
-            datum1.tm_mon += 1;
-            mktime(&datum1);
-            char temp2[20];
-            strftime(temp2, sizeof(temp2), "%d%m%y", &datum1);
-            datumIsteka = strdup(temp2);
-            
-            printf("Unesite ime: ");
-            fgets(ime, 20, stdin);
-            ime[strcspn(ime, "\n")] = '\0';
-
-            printf("Unesite prezime: ");
-            fgets(prezime, 20, stdin);
-            prezime[strcspn(prezime, "\n")] = '\0';
-
-            FILE* bazaMjesecne = fopen("../files/mjesecneKartice.txt", "a");
-            if (!bazaMjesecne) {
-                perror("Greska pri otvaranju datoteke.");
-                return;
-            }
-            fseek(bazaMjesecne, 0, SEEK_END);
-            fprintf(bazaMjesecne, "%-16s%-20s%-12s%-12s\n", ime, prezime, datumIzdaje, datumIsteka);
-
-            fclose(bazaMjesecne);
-        }
-
-        bool jeValidna()
-        {
-            struct tm datum;
-            memset(&datum, 0, sizeof(datum));
-
-            char* dan = substr(datumIsteka, 0, 2);
-            char* mjesec = substr(datumIsteka, 2, 2);
-            char* godina = substr(datumIsteka, 2, 2);
-
-            int day = parseInt(dan);
-            int month = parseInt(mjesec);
-            int year = parseInt(godina);
-
-            datum.tm_mday = day;
-            datum.tm_mon = month;
-            datum.tm_year = year;
-
-            time_t istDate = mktime(&datum);
-            time_t now = time(NULL);
-
-            return now > istDate;
-        }
-
-        char* getIme () const { return ime;}
-        char* getPrezime () const { return prezime;}
-        char* getDatumIzdaje () const { return datumIzdaje;}
-        char* getDatumIsteka () const { return datumIsteka;}
-
-    private:
-        char* substr(char* str, int start, int length)
-        {
-            if (str == nullptr || start < 0 || length < 0) {
-                return nullptr;
-            }
-
-            int strLength = strlen(str);
-            if (start + length > strLength) {
-                length = strLength - start;
-            }
-
-            char* result = new char[length + 1];
-            strncpy(result, str + start, length);
-            result[length] = '\0';
-
-            return result;
-        }
-
-        int parseInt(char* chars)
-        {
-            int sum = 0;
-            int len = strlen(chars);
-            for (int x = 0; x < len; x++)
-            {
-                int n = chars[len - (x + 1)] - '0';
-                sum = sum + powInt(n, x);
-            }
-            return sum;
-        }
-
-        int powInt(int x, int y)
-        {
-            for (int i = 0; i < y; i++)
-            {
-                x *= 10;
-            }
-            return x;
-        }
+    std::string getIme() const { return ime; }
+    std::string getPrezime() const { return prezime; }
+    std::string getDatumIzdaje() const { return datumIzdaje; }
+    std::string getDatumIsteka() const { return datumIsteka; }
 };
