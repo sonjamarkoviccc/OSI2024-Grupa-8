@@ -1,0 +1,4 @@
+operater1 lozinka1
+operater2 lozinka2
+uprava1 lozinka3
+uprava2 lozinka4
