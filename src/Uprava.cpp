@@ -67,7 +67,7 @@ void Uprava::prijava(const char *fajl)
 void Uprava::prikaziMogucnostiUprave()
 {
     int izbor;
-    const char *fajl = "korisnici.txt";
+    const char *fajl = "../files/korisnici.txt";
     do
     {
         printf("\n1. Definisanje cjenovnika\n");
