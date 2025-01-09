@@ -1,3 +1,2 @@
-1|Automobil parkiran na mom mjestu|rijesena|dgg
-2|Blokiran prilaz parkingu|rijesena|d
-3|Automobil oštećen|rijesena|Odgovor na zalbu.
+1|Automobil parkiran na mom mjestu|aktivna|
+2|Blokiran prilaz parkingu|aktivna|
