@@ -1,0 +1,2 @@
+1|Automobil parkiran na mom mjestu|aktivna|
+2|Blokiran prilaz parkingu|aktivna|
