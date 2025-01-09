@@ -1,72 +1,114 @@
+#pragma once
 #include <cstdio>
 #include <cstring>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
 #include <conio.h>
 
-class Nalog {
+class Nalog
+{
 private:
     char korisnickoIme[50];
     char sifra[50];
+    char status[20];
 
 public:
-    Nalog() {
+    const char *fajl = "korisnici.txt";
+    Nalog()
+    {
         korisnickoIme[0] = '\0';
         sifra[0] = '\0';
+        status[0] = '\0';
+    }
+
+    Nalog(const char *ime, const char *pass, const char *stat)
+    {
+        setKorisnickoIme(ime);
+        setSifra(pass);
+        setStatus(stat);
     }
 
     ~Nalog() {}
 
-    void setKorisnickoIme(const char* ime) {
+    void setKorisnickoIme(const char *ime)
+    {
         strncpy(korisnickoIme, ime, sizeof(korisnickoIme) - 1);
         korisnickoIme[sizeof(korisnickoIme) - 1] = '\0';
     }
 
-    void setSifra(const char* pass) {
+    void setSifra(const char *pass)
+    {
         strncpy(sifra, pass, sizeof(sifra) - 1);
         sifra[sizeof(sifra) - 1] = '\0';
     }
 
-    const char* getKorisnickoIme() const {
+    void setStatus(const char *stat)
+    {
+        strncpy(status, stat, sizeof(status) - 1);
+        status[sizeof(status) - 1] = '\0';
+    }
+
+    const char *getKorisnickoIme() const
+    {
         return korisnickoIme;
     }
 
-    const char* getSifra() const {
+    const char *getSifra() const
+    {
         return sifra;
     }
 
-    bool login(const char* ime, const char* pass, const char* fajl) {
-        FILE* file = fopen(fajl, "r");
-        if (!file) {
-            printf("Greska prilikom otvaranja fajla!\n");
+    const char *getStatus() const
+    {
+        return status;
+    }
+
+    bool login(const char *ime, const char *pass, const char *stat, const char *fajl)
+    {
+        std::ifstream file(fajl);
+        if (!file.is_open())
+        {
+            std::cerr << "Greska prilikom otvaranja fajla!" << std::endl;
             return false;
         }
 
-        char fileIme[50], fileSifra[50];
-        while (fscanf(file, "%s %s", fileIme, fileSifra) == 2) {
-            if (strcmp(fileIme, ime) == 0 && strcmp(fileSifra, pass) == 0) {
-                fclose(file);
+        std::string fileIme, fileSifra, fileStatus;
+        while (file >> fileIme >> fileSifra >> fileStatus)
+        {
+            if (fileIme == ime && fileSifra == pass && fileStatus == stat)
+            {
+                strncpy(status, fileStatus.c_str(), sizeof(status) - 1);
+                file.close();
                 return true;
             }
         }
 
-        fclose(file);
+        file.close();
         return false;
     }
 
-    void unesiLozinku(char* lozinka, int maxDuzina) {
+    void unesiLozinku(char *lozinka, int maxDuzina)
+    {
         int i = 0;
         char c;
 
-        printf("Unesite sifru: ");
-        while ((c = getch()) != '\r' && i < maxDuzina - 1) { 
-            if (c == '\b' && i > 0) { 
-                printf("\b \b"); 
+        std::cout << "Unesite sifru: ";
+        while ((c = getch()) != '\r' && i < maxDuzina - 1)
+        {
+            if (c == '\b' && i > 0)
+            {
+                std::cout << "\b \b";
                 i--;
-            } else if (c != '\b') {
+            }
+            else if (c != '\b')
+            {
                 lozinka[i++] = c;
-                printf("*");
+                std::cout << "*";
             }
         }
         lozinka[i] = '\0';
-        printf("\n");
+        std::cout << std::endl;
     }
 };
