@@ -4,20 +4,6 @@
 #include <iostream>
 #include <cstring>
 
-void Uprava::definisanjeCenovnika()
-{
-    printf("Definisanje cjenovnika...\n");
-}
-
-void Uprava::izvestajORadu()
-{
-    printf("Dobijanje izvestaja o radu parkinga...\n");
-}
-
-void Uprava::izdavanjeMjesecneGodisnjeKarte()
-{
-    printf("Izdavanje mjesecne ili godisnje karte...\n");
-}
 
 void Uprava::upravljanjeNalozimaOpcije(const char *fajl)
 {
@@ -72,9 +58,10 @@ void Uprava::prikaziMogucnostiUprave()
     {
         printf("\n1. Definisanje cjenovnika\n");
         printf("2. Dobijanje izvestaja o radu parkinga\n");
-        printf("3. Izdavanje mjesecne ili godisnje karte\n");
-        printf("4. Upravljanje nalozima\n");
-        printf("5. Odjava\n");
+        printf("3. Izdavanje mjesecne karte\n");
+        printf("4. Izdavanje invalidske karte\n");
+        printf("5. Upravljanje nalozima\n");
+        printf("6. Odjava\n");
 
         printf("Izaberite opciju: ");
         scanf("%d", &izbor);
@@ -82,18 +69,27 @@ void Uprava::prikaziMogucnostiUprave()
         switch (izbor)
         {
         case 1:
-            definisanjeCenovnika();
+            CjenovnikParkinga cjenovnik;
+            definisanjeCjenovnika(cjenovnik);
             break;
         case 2:
-            izvestajORadu();
+            Izvjestaj izvjestaj;
+            izvjestajORadu(izvjestaj);
             break;
-        case 3:
-            izdavanjeMjesecneGodisnjeKarte();
+        case 3: {
+            MjesecnaKartica mk;
+            izdavanjeMjesecneKarte(mk);
             break;
-        case 4:
+        }
+        case 4: {
+            InvalidskaKartica ik;
+            izdavanjeInvalidskeKarte(ik);
+            break;
+        }
+        case 5:
             upravljanjeNalozimaOpcije(fajl);
             break;
-        case 5:
+        case 6:
             char confirm;
             printf("Da li ste sigurni da želite da se odjavite? (y/n): ");
             scanf(" %c", &confirm);
