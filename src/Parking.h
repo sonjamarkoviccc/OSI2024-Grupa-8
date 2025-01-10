@@ -74,4 +74,6 @@ public:
             }
         }
     }
+
+    std::string getZona() const { return parkingZona; }
 };
