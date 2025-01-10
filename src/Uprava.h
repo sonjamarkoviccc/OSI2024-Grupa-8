@@ -4,6 +4,8 @@
 #include "UpravljanjeNalozima.h"
 #include "MjesecnaKartica.h"
 #include "InvalidskaKartica.h"
+#include "Izvjestaj.h"
+#include "CjenovnikParkinga.h"
 
 class Uprava
 {
@@ -14,8 +16,14 @@ public:
     Uprava() {}
     ~Uprava() {}
 
-    void definisanjeCenovnika();
-    void izvestajORadu();
+    void definisanjeCjenovnika(CjenovnikParkinga& cjenovnik)
+    {
+        cjenovnik.pokreniProgram();
+    }
+    void izvjestajORadu(Izvjestaj& izvjestaj)
+    {
+        izvjestaj.pokreniProgram();
+    }
     void izdavanjeMjesecneKarte(MjesecnaKartica& mjesecna)
     {
         mjesecna.izdajaKartice();
