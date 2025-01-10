@@ -102,7 +102,7 @@ public:
                 std::cout << "Unesite dan (radni, vikend, praznik): ";
                 std::getline(std::cin, dan);
                 std::cout << "Unesite vrijeme: ";
-                std::getline(std::cin, vreme);
+                std::getline(std::cin, vrijeme);
                 std::cout << "Unesite cijenu: ";
                 std::getline(std::cin, cijena);
 

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include "Parking.h"
 
 class UlaznaKartica {
 private:
@@ -14,7 +15,7 @@ public:
     UlaznaKartica() = default;
     ~UlaznaKartica() = default;
 
-    void setKartica()
+    void setKartica(const Parking& p)
     {
         std::cout << "Unesite tablicu: ";
         std::cin >> tablica;
@@ -25,8 +26,7 @@ public:
         strftime(vr, sizeof(vr), "%H:%M:%S", &datetime);
         pocetnoVrijeme = vr;
 
-        std::cout << "Unesite zonu: ";
-        std::cin >> zona;
+        zona = p.getZona();
 
         char d[5];
         strftime(d, sizeof(d), "%a", &datetime);
