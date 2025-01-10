@@ -20,7 +20,7 @@ public:
     {
         if (!jeValidanStatus(nalog.getStatus()))
         {
-            std::cerr << "Greska: Nevalidan status! Dozvoljeni statusi su: 'uprava' ili 'operater'.\n";
+            std::cerr << "Greska: Nevalidan tip naloga! Dozvoljeni tipovi su: 'uprava' ili 'operater'.\n";
             return;
         }
 
@@ -73,7 +73,7 @@ public:
         std::cout << "Postojeći nalozi:\n";
         while (file >> fileIme >> fileSifra >> fileStatus)
         {
-            std::cout << "Korisnicko ime: " << fileIme << ", Status: " << fileStatus << std::endl;
+            std::cout << "Korisnicko ime: " << fileIme << ", Tip naloga: " << fileStatus << std::endl;
         }
         file.close();
     }
@@ -95,8 +95,21 @@ public:
         {
             if (fileIme == imeZaBrisanje && fileStatus != "admin")
             {
-                nalogPronadjen = true;
-                continue;
+                std::string unesenaSifra;
+                std::cout << "Unesite sifru za nalog '" << imeZaBrisanje << "': ";
+                std::cin >> unesenaSifra;
+
+                if (unesenaSifra == fileSifra)
+                {
+                    nalogPronadjen = true;
+                    continue; 
+                }
+                else
+                {
+                    std::cout << "Pogresna sifra! Nalog nije obrisan.\n";
+                    file.close();
+                    return;
+                }
             }
             nalozi.push_back(fileIme + " " + fileSifra + " " + fileStatus);
         }
@@ -148,7 +161,7 @@ public:
                 std::cout << "Sta zelite da promjenite?\n";
                 std::cout << "1. Promjeni korisnicko ime\n";
                 std::cout << "2. Promjeni sifru\n";
-                std::cout << "3. Promjeni status\n";
+                std::cout << "3. Promjeni tip naloga\n";
                 std::cout << "0. Nazad\n";
                 std::cout << "Izbor: ";
                 std::cin >> opcija;
@@ -182,12 +195,12 @@ public:
                 else if (opcija == 3)
                 {
                     char noviStatus[20];
-                    std::cout << "Unesite novi status (upravna ili operater): ";
+                    std::cout << "Unesite novi tip naloga (upravna ili operater): ";
                     std::cin >> noviStatus;
 
                     if (!jeValidanStatus(noviStatus))
                     {
-                        std::cout << "Greska: Nevalidan status! Dozvoljeni statusi su: 'upravna' ili 'operater'.\n";
+                        std::cout << "Greska: Nevalidan tip naloga! Dozvoljeni tipovi su: 'upravna' ili 'operater'.\n";
                         continue;
                     }
 
@@ -254,7 +267,7 @@ public:
                 std::cout << "Unesite sifru: ";
                 std::cin >> sifra;
 
-                std::cout << "Unesite status: ";
+                std::cout << "Unesite tip naloga: ";
                 std::cin >> status;
 
                 if (korisnickoImePostoji(fajl, ime))

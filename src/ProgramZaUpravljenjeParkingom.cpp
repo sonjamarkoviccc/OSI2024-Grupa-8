@@ -15,7 +15,7 @@ int main()
         char korisnickoIme[50];
         char sifra[50];
 
-        std::cout << "Unesite status: ";
+        std::cout << "Unesite tip naloga: ";
         std::cin >> tipKorisnika;
 
         std::cout << "Unesite korisnicko ime: ";
@@ -38,7 +38,7 @@ int main()
             }
             else
             {
-                std::cout << "Nepoznat status: " << nalog.getStatus() << ".\n";
+                std::cout << "Nepoznat tip naloga: " << nalog.getStatus() << ".\n";
             }
         }
         else
