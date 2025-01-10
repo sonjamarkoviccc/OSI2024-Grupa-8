@@ -30,9 +30,11 @@ public:
             std::cerr << "Greska prilikom otvaranja fajla!" << std::endl;
             return;
         }
+
         file << std::endl;
         file << nalog.getKorisnickoIme() << " " << nalog.getSifra() << " " << nalog.getStatus() << std::endl;
         file.close();
+        std::cout << "Nalog uspesno dodat!" << std::endl;
     }
 
     static bool korisnickoImePostoji(const char *fajl, const char *ime)
@@ -263,10 +265,10 @@ public:
                 {
                     Nalog noviNalog(ime, sifra, status);
                     dodajNalog(fajl, noviNalog);
-                    std::cout << "Nalog uspesno dodat!" << std::endl;
                 }
                 break;
             }
+
             case 2:
             {
                 prikaziNaloge(fajl);

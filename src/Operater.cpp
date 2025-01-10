@@ -57,7 +57,7 @@ void Operater::prijava(const char *fajl)
 void Operater::prikaziMogucnostiOperatera()
 {
     int izbor;
-    const char *fajl = "korisnici.txt";
+    const char *fajl = "../files/korisnici.txt";
 
     do
     {

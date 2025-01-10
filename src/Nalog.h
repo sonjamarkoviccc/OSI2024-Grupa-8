@@ -15,7 +15,7 @@ private:
     char status[20];
 
 public:
-    const char *fajl = "korisnici.txt";
+    const char *fajl = "../files/korisnici.txt";
     Nalog()
     {
         korisnickoIme[0] = '\0';

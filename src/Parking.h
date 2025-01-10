@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <string>
 #include "Auto.h"
 
 class Parking
@@ -9,11 +10,12 @@ class Parking
 private:
     int ukupnoMjesta;
     int slobodnaMjesta;
+    std:: string parkingZona;
     std::vector<std::shared_ptr<Auto>> parkingMjesta;
 
 public:
-    Parking(int ukupnoMjesta)
-        : ukupnoMjesta(ukupnoMjesta), slobodnaMjesta(ukupnoMjesta), parkingMjesta(ukupnoMjesta, nullptr) {}
+    Parking(int ukupnoMjesta, std::string parkingZona)
+        : ukupnoMjesta(ukupnoMjesta), parkingZona(parkingZona),  slobodnaMjesta(ukupnoMjesta), parkingMjesta(ukupnoMjesta, nullptr) {}
 
     bool parkiraj(int brojMjesta, const std::shared_ptr<Auto> &autoPtr)
     {
