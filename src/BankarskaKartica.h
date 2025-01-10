@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
+#include <iomanip>
 
 class BankarskaKartica
 {
@@ -44,7 +45,7 @@ class BankarskaKartica
                 if (!file)
                 {
                     std::cerr << "Greška prilikom otvaranja fajla.\n";
-                    return;
+                    exit(EXIT_FAILURE);
                 }
 
                 while (file >> idKartice >> Ime >> Prezime >> stanje)
@@ -60,7 +61,7 @@ class BankarskaKartica
                 if (!file)
                 {
                     std::cerr << "Greška prilikom otvaranja fajla.\n";
-                    return;
+                    exit(EXIT_FAILURE);
                 }
 
                 while (file >> idKartice >> Ime >> Prezime >> stanje)
@@ -78,10 +79,48 @@ class BankarskaKartica
             if (stanje >= iznos)
             {
                 stanje -= iznos;
+                std::string fileName = (idKartice.substr(0, 2) == "02") ? "../files/Banka1.txt" : "../files/Banka2.txt";
+
+                std::ifstream inputFile(fileName);
+                if (!inputFile)
+                {
+                    std::cerr << "Greška prilikom otvaranja fajla za čitanje.\n";
+                    exit(EXIT_FAILURE);
+                }
+
+                // Temporary file to write updated data
+                std::ofstream tempFile("../files/temp.txt");
+                if (!tempFile)
+                {
+                    std::cerr << "Greška prilikom otvaranja fajla za pisanje.\n";
+                    exit(EXIT_FAILURE);
+                }
+
+                std::string fileIdKartice, fileIme, filePrezime;
+                double fileStanje;
+                while (inputFile >> fileIdKartice >> fileIme >> filePrezime >> fileStanje)
+                {
+                    if (fileIdKartice == idKartice)
+                    {
+                        fileStanje = stanje; // Update stanje for the matching record
+                    }
+                    tempFile << fileIdKartice << " " << fileIme << " " << filePrezime << " " << fileStanje << "\n";
+                }
+
+                inputFile.close();
+                tempFile.close();
+
+                // Replace the original file with the updated file
+                if (remove(fileName.c_str()) != 0 || rename("../files/temp.txt", fileName.c_str()) != 0)
+                {
+                    std::cerr << "Greška prilikom ažuriranja fajla.\n";
+                    exit(EXIT_FAILURE);
+                }
             }
             else
             {
-                std::cout << "Nemate dovoljno na stanju.\n" << std::endl;
+                std::cout << "Nemate dovoljno na stanju.\n";
             }
+
         }
 };
