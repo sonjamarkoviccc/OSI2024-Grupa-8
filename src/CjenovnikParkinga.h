@@ -5,7 +5,7 @@
 struct Cjenovnik {
     std::string zona;
     std::string dan;
-    std::string vrijeme;
+    std::string vrijeme; 
     std::string cijena;
 };
 
@@ -77,7 +77,7 @@ public:
             }
         }
         
-        std::cout << "Cijena nije pronađena.\n";
+        std::cout << "Cijena nije pronadjena.\n";
     }
 
     void prikaziMeni() const {
@@ -101,8 +101,8 @@ public:
                 std::getline(std::cin, zona);
                 std::cout << "Unesite dan (radni, vikend, praznik): ";
                 std::getline(std::cin, dan);
-                std::cout << "Unesite vrijeme: ";
-                std::getline(std::cin, vrijeme);
+                std::cout << "Unesite vrijeme (u formatu HH:MM:SS): ";
+                std::getline(std::cin, vrijeme);  
                 std::cout << "Unesite cijenu: ";
                 std::getline(std::cin, cijena);
 
@@ -114,7 +114,7 @@ public:
                 std::getline(std::cin, zona);
                 std::cout << "Unesite dan (radni, vikend, praznik): ";
                 std::getline(std::cin, dan);
-                std::cout << "Unesite vrijeme: ";
+                std::cout << "Unesite vrijeme (u formatu HH:MM:SS): ";
                 std::getline(std::cin, vrijeme);
 
                 nadjiCijenu(zona, dan, vrijeme);
@@ -125,4 +125,8 @@ public:
         } while (izbor != 3);
     }
 };
+
+
+
+
 
