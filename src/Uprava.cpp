@@ -4,16 +4,6 @@
 #include <iostream>
 #include <cstring>
 
-void Uprava::definisanjeCenovnika()
-{
-    printf("Definisanje cjenovnika...\n");
-}
-
-void Uprava::izvestajORadu()
-{
-    printf("Dobijanje izvestaja o radu parkinga...\n");
-}
-
 void Uprava::upravljanjeNalozimaOpcije(const char *fajl)
 {
     upravljanjeNalozima.prikaziMeni(fajl);
@@ -77,14 +67,16 @@ void Uprava::prikaziMogucnostiUprave()
 
         switch (izbor)
         {
-        case 1:
-            CjenovnikParkinga cjenovnik;
-            definisanjeCjenovnika(cjenovnik);
+        case 1: {
+            CjenovnikParkinga cenovnik;
+            definisanjeCjenovnika(cenovnik);
             break;
-        case 2:
-            Izvjestaj izvjestaj;
-            izvjestajORadu(izvjestaj);
+        }    
+        case 2: {
+            Izvjestaj izvestaj;
+            izvjestajORadu(izvestaj);
             break;
+        }  
         case 3: {
             MjesecnaKartica mk;
             izdavanjeMjesecneKarte(mk);

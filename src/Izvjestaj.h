@@ -9,6 +9,9 @@ const int MAX_ZONA = 10; // maksimalan broj zona
 const int MAX_TIP = 2;   // RADNI ili VIKEND
 const int MAX_VREMENSKISLOT = 2; // 1 ili 24 sata
 
+
+class Izvjestaj {
+private:
 struct Korisnik {
     std::string registarskaTablica; 
     double iznos;                   
@@ -24,8 +27,6 @@ struct Cjenovnik {
     double cijena;     
 };
 
-class Izvjestaj {
-private:
     Korisnik korisnici[MAX_KORISNIKA];
     int brojKorisnika;
     Cjenovnik cjenovnik[MAX_ZONA * MAX_TIP * MAX_VREMENSKISLOT];  
@@ -211,49 +212,9 @@ public:
                   << "Odaberite opciju: ";
     }
     
-    void pokreniProgram() {
-    Izvjestaj izvjestaj;
-    int opcija;
-    do {
-        izvjestaj.prikaziMeni();
-        std::cin >> opcija;
-
-        switch (opcija) {
-            case 1: {
-                std::string datum;
-                std::cout << "Unesite datum (DD.MM.YYYY): ";
-                std::cin >> datum;
-                izvjestaj.generisiDnevniIzvjestaj(datum);
-                break;
-            }
-            case 2: {
-                std::string startDatum, endDatum;
-                std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
-                std::cin >> startDatum;
-                std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
-                std::cin >> endDatum;
-                izvjestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
-                break;
-            }
-            case 3: {
-                int mjesec, godina;
-                std::cout << "Unesite mjesec (1-12): ";
-                std::cin >> mjesec;
-                std::cout << "Unesite godinu (YYYY): ";
-                std::cin >> godina;
-                izvjestaj.generisiMjesecniIzvjestaj(mjesec, godina);
-                break;
-            }
-            case 4:
-                std::cout << "Izlaz...\n";
-                break;
-            default:
-                std::cout << "Nepoznata opcija. Pokusajte ponovo.\n";
-                break;
-        }
-    } while (opcija != 4);
-}
+    
 };
+
 
 
 
