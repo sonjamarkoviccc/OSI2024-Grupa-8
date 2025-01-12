@@ -1,111 +1,160 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <ctime>
+#include <vector>
+#include <sstream>
 
-const int MAX_KORISNIKA = 100; 
+const int MAX_KORISNIKA = 100;
+const int MAX_ZONA = 10; // maksimalan broj zona
+const int MAX_TIP = 2;   // RADNI ili VIKEND
+const int MAX_VREMENSKISLOT = 2; // 1 ili 24 sata
 
 struct Korisnik {
-    std::string registarskaTablica; // Registarska oznaka korisnika
-    double iznos;                   // Iznos zarađen od ovog korisnika
-    std::string datum;              // Datum transakcije (u formatu DD MM YYYY)
+    std::string registarskaTablica; 
+    double iznos;                   
+    std::string datum;              
+    std::string zona;               
+    int trajanje;               
+};
+
+struct Cjenovnik {
+    std::string zona;   
+    std::string tip;    
+    int trajanje;       
+    double cijena;     
 };
 
 class Izvjestaj {
 private:
-    Korisnik korisnici[MAX_KORISNIKA]; 
-    int brojKorisnika;                   
+    Korisnik korisnici[MAX_KORISNIKA];
+    int brojKorisnika;
+    Cjenovnik cjenovnik[MAX_ZONA * MAX_TIP * MAX_VREMENSKISLOT];  
 
-    bool ValidanDatum(int dan, int mjesec, int godina) const {
-        if (mjesec < 1 || mjesec > 12 || dan < 1 || godina < 2000) return false;
-        int daniUMjesecu[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        if ((godina % 4 == 0 && godina % 100 != 0) || godina % 400 == 0) daniUMjesecu[1] = 29; 
-        return dan <= daniUMjesecu[mjesec - 1];
+    void ucitajCjenovnik() {
+        std::ifstream ulazCjenovnik("cjenovnik.txt");
+        if (!ulazCjenovnik) {
+            std::cerr << "Greska prilikom otvaranja fajla cjenovnik.txt.\n";
+            return;
+        }
+
+        std::string zona, tip, vrijeme;
+        double cijena;
+        int index = 0;
+        while (ulazCjenovnik >> zona >> tip >> vrijeme >> cijena) {
+            int trajanje = timeToMinutes(vrijeme);  // konvertovanje h:m:s u minute
+            cjenovnik[index++] = {zona, tip, trajanje, cijena};
+        }
+        ulazCjenovnik.close();
+    }
+
+    bool isWeekend(const std::string& dayType) {
+        return dayType == "sat" || dayType == "sun";
+    }
+
+    int timeToMinutes(const std::string& timeStr) {
+        int hours, minutes, seconds;
+        char colon;
+        std::istringstream ss(timeStr);
+        ss >> hours >> colon >> minutes >> colon >> seconds;
+
+        return hours * 60 + minutes;  
+    }
+
+    double calculatePrice(const std::string& zona, bool isWeekend, int trajanje) {
+        std::string vrijeme = isWeekend ? "VIKEND" : "RADNI";
+        double price = 0.0;
+
+        for (int i = 0; i < MAX_ZONA * MAX_TIP * MAX_VREMENSKISLOT; ++i) {
+            if (cjenovnik[i].zona == zona && cjenovnik[i].tip == vrijeme) {
+                if ((trajanje < 60 && cjenovnik[i].trajanje == 60) || (trajanje >= 60 && cjenovnik[i].trajanje == 1440)) {
+                    price = cjenovnik[i].cijena;
+                    break;
+                }
+            }
+        }
+
+        if (price == 0.0) {
+            std::cerr << "Cijena nije pronadjena u zoni " << zona << " za trajanje " << trajanje << " minuta.\n";
+        } else {
+            std::cout << "Cijena za zonu " << zona << " za " << trajanje << " minuta: " << price << " KM\n";
+        }
+
+        return price;
     }
 
     void ucitajKorisnike() {
-        std::ifstream ulazniFajl("bazapodataka.txt");
-        if (!ulazniFajl) {
-            std::cerr << "Greska prilikom otvaranja fajla.\n";
+        std::ifstream ulazTablice("tablice.txt");
+        if (!ulazTablice) {
+            std::cerr << "Greska prilikom otvaranja fajla tablice.txt.\n";
             return;
         }
-        
-        /*
-        Podaci potrebni za izvjestaj se nalaze u datoteci formata:
-        
-        BRTABLICA CENAPARKINGA DAN MJESEC GODINA
-        :
-        :
-        */
 
         brojKorisnika = 0;
-        while (ulazniFajl >> korisnici[brojKorisnika].registarskaTablica >> korisnici[brojKorisnika].iznos) {
-            std::string dan, mjesec, godina;
-            ulazniFajl >> dan >> mjesec >> godina;
-            korisnici[brojKorisnika].datum = dan + " " + mjesec + " " + godina;
+        std::string linija;
+        while (std::getline(ulazTablice, linija) && brojKorisnika < MAX_KORISNIKA) {
+            std::istringstream iss(linija);
+            std::string tablica, zona, dayType, startTime, datum;
+
+            if (!(iss >> tablica >> zona >> dayType >> startTime >> datum)) {
+                std::cerr << "Greska prilikom parsiranja linije: " << linija << "\n";
+                continue;
+            }
+
+            std::cout << "Pročitano: " << tablica << ", " << zona << ", " << dayType << ", " << startTime << ", " << datum << "\n";
+
+            int duration = timeToMinutes(startTime);
+
+            std::cout << "Izračunato trajanje za " << tablica << ": " << duration << " minuta\n";
+
+            bool weekend = isWeekend(dayType);
+            double iznos = calculatePrice(zona, weekend, duration);
+
+            korisnici[brojKorisnika] = {tablica, iznos, datum, zona, duration};
             brojKorisnika++;
-            if (brojKorisnika >= MAX_KORISNIKA) break;
-        }
-        std::cout << "Korisnici uspješno ucitani.\n";
-    }
 
-    double zbirZarada(const std::string& tablica, const std::string& startDatum, const std::string& endDatum) const {
-        double total = 0.0;
-        for (int i = 0; i < brojKorisnika; ++i) {
-            if (korisnici[i].registarskaTablica == tablica && korisnici[i].datum >= startDatum && korisnici[i].datum <= endDatum) {
-                total += korisnici[i].iznos;
-            }
+            std::cout << "Ucitano: " << tablica << ", " << zona << ", " << datum << ", " << iznos << " KM, trajanje: " << duration << " minuta\n";
         }
-        return total;
-    }
+        ulazTablice.close();
 
-    bool tablicaVecPostoji(const std::string& tablica, const std::string pregledane[], int brojPregledanih) const {
-        for (int i = 0; i < brojPregledanih; ++i) {
-            if (pregledane[i] == tablica) {
-                return true;
-            }
-        }
-        return false;
+        std::cout << "Korisnici uspjesno ucitani. Ukupan broj korisnika: " << brojKorisnika << "\n";
     }
 
     void sacuvajIzvjestajUFajl(const std::string& naslov, int brojKorisnika, double ukupnaZarada) const {
         std::ofstream izvjestajFajl("izvjestaj.txt");
         if (!izvjestajFajl) {
-            std::cerr << "Greška prilikom otvaranja fajla za pisanje.\n";
+            std::cerr << "Greska prilikom otvaranja fajla za pisanje.\n";
             return;
         }
+
         izvjestajFajl << naslov << "\n"
-                     << "Ukupan broj korisnika: " << brojKorisnika << "\n"
-                     << "Ukupna zarada: " << ukupnaZarada << " KM\n\n";
+                      << "Ukupan broj korisnika: " << brojKorisnika << "\n"
+                      << "Ukupna zarada: " << ukupnaZarada << " KM\n\n";
+
+        izvjestajFajl.close();
+    }
+
+    bool isDatumInRange(const std::string& datum, const std::string& startDatum, const std::string& endDatum) const {
+        return datum >= startDatum && datum <= endDatum;
     }
 
 public:
     Izvjestaj() : brojKorisnika(0) {
+        ucitajCjenovnik();
         ucitajKorisnike();
     }
 
-    void generisiDnevniIzvjestaj(int dan, int mjesec, int godina) const {
-        if (!ValidanDatum(dan, mjesec, godina)) {
-            std::cerr << "Neispravan datum.\n";
-            return;
-        }
-
-        std::string pregledaneTablice[MAX_KORISNIKA];
-        int brojPregledanih = 0;
+    void generisiDnevniIzvjestaj(const std::string& datum) const {
         double ukupnaZarada = 0.0;
-
-        std::string datum = (dan < 10 ? "0" : "") + std::to_string(dan) + " " + (mjesec < 10 ? "0" : "") + std::to_string(mjesec) + " " + std::to_string(godina);
+        int brojPregledanih = 0;
 
         for (int i = 0; i < brojKorisnika; ++i) {
-            if (!tablicaVecPostoji(korisnici[i].registarskaTablica, pregledaneTablice, brojPregledanih)) {
-                if (korisnici[i].datum == datum) {
-                    pregledaneTablice[brojPregledanih++] = korisnici[i].registarskaTablica;
-                    ukupnaZarada += korisnici[i].iznos;
-                }
+            if (korisnici[i].datum == datum) {
+                ukupnaZarada += korisnici[i].iznos;
+                brojPregledanih++;
             }
         }
 
-        std::string naslov = "Izvjestaj za datum: " + datum;
+        std::string naslov = "Dnevni izvjestaj za datum: " + datum;
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
@@ -113,37 +162,18 @@ public:
         sacuvajIzvjestajUFajl(naslov, brojPregledanih, ukupnaZarada);
     }
 
-    void generisiNedeljniIzvjestaj(int nedelja, int godina) const {
-        struct tm startDate = {};
-        startDate.tm_year = godina - 2000;
-        startDate.tm_mday = (nedelja - 1) * 7 + 1;
-        startDate.tm_mon = 0; 
-        mktime(&startDate);
-
-        char buffer[11];
-        strftime(buffer, sizeof(buffer), "%d %m %Y", &startDate);
-        std::string startDatum = buffer;
-
-        struct tm endDate = startDate;
-        endDate.tm_mday += 6;
-        mktime(&endDate);
-        strftime(buffer, sizeof(buffer), "%d %m %Y", &endDate);
-        std::string endDatum = buffer;
-
-        std::string pregledaneTablice[MAX_KORISNIKA];
-        int brojPregledanih = 0;
+    void generisiNedeljniIzvjestaj(const std::string& startDatum, const std::string& endDatum) const {
         double ukupnaZarada = 0.0;
+        int brojPregledanih = 0;
 
         for (int i = 0; i < brojKorisnika; ++i) {
-            if (!tablicaVecPostoji(korisnici[i].registarskaTablica, pregledaneTablice, brojPregledanih)) {
-                if (korisnici[i].datum >= startDatum && korisnici[i].datum <= endDatum) {
-                    pregledaneTablice[brojPregledanih++] = korisnici[i].registarskaTablica;
-                    ukupnaZarada += korisnici[i].iznos;
-                }
+            if (isDatumInRange(korisnici[i].datum, startDatum, endDatum)) {
+                ukupnaZarada += korisnici[i].iznos;
+                brojPregledanih++;
             }
         }
 
-        std::string naslov = "Izvjestaj za nedelju: " + std::to_string(nedelja) + ", godina: " + std::to_string(godina);
+        std::string naslov = "Nedeljni izvjestaj za period: " + startDatum + " - " + endDatum;
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
@@ -152,20 +182,19 @@ public:
     }
 
     void generisiMjesecniIzvjestaj(int mjesec, int godina) const {
-        std::string pregledaneTablice[MAX_KORISNIKA];
-        int brojPregledanih = 0;
         double ukupnaZarada = 0.0;
+        int brojPregledanih = 0;
 
         for (int i = 0; i < brojKorisnika; ++i) {
             int d, m, y;
-            sscanf(korisnici[i].datum.c_str(), "%d %d %d", &d, &m, &y);
-            if (m == mjesec && y == godina && !tablicaVecPostoji(korisnici[i].registarskaTablica, pregledaneTablice, brojPregledanih)) {
-                pregledaneTablice[brojPregledanih++] = korisnici[i].registarskaTablica;
+            sscanf(korisnici[i].datum.c_str(), "%d.%d.%d", &d, &m, &y);
+            if (m == mjesec && y == godina) {
                 ukupnaZarada += korisnici[i].iznos;
+                brojPregledanih++;
             }
         }
 
-        std::string naslov = "Izvjestaj za mesec: " + std::to_string(mjesec) + ", godina: " + std::to_string(godina);
+        std::string naslov = "Mjesecni izvjestaj za mjesec: " + std::to_string(mjesec) + " godina: " + std::to_string(godina);
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
@@ -179,34 +208,54 @@ public:
                   << "2. Nedeljni izvjestaj\n"
                   << "3. Mjesecni izvjestaj\n"
                   << "4. Izlaz\n"
-                  << "Izaberite opciju: ";
+                  << "Odaberite opciju: ";
     }
-
+    
     void pokreniProgram() {
-        int izbor;
-        do {
-            prikaziMeni();
-            std::cin >> izbor;
+    Izvjestaj izvjestaj;
+    int opcija;
+    do {
+        izvjestaj.prikaziMeni();
+        std::cin >> opcija;
 
-            if (izbor == 1) {
-                int dan, mjesec, godina;
-                std::cout << "Unesite datum (DD MM YYYY): ";
-                std::cin >> dan >> mjesec >> godina;
-                generisiDnevniIzvjestaj(dan, mjesec, godina);
-            } else if (izbor == 2) {
-                int nedelja, godina;
-                std::cout << "Unesite nedelju i godinu (WW YYYY): ";
-                std::cin >> nedelja >> godina;
-                generisiNedeljniIzvjestaj(nedelja, godina);
-            } else if (izbor == 3) {
-                int mjesec, godina;
-                std::cout << "Unesite mjesec i godinu (MM YYYY): ";
-                std::cin >> mjesec >> godina;
-                generisiMjesecniIzvjestaj(mjesec, godina);
-            } else if (izbor != 4) {
-                std::cout << "Nepoznata opcija.\n";
+        switch (opcija) {
+            case 1: {
+                std::string datum;
+                std::cout << "Unesite datum (DD.MM.YYYY): ";
+                std::cin >> datum;
+                izvjestaj.generisiDnevniIzvjestaj(datum);
+                break;
             }
-        } while (izbor != 4);
-    }
+            case 2: {
+                std::string startDatum, endDatum;
+                std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
+                std::cin >> startDatum;
+                std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
+                std::cin >> endDatum;
+                izvjestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
+                break;
+            }
+            case 3: {
+                int mjesec, godina;
+                std::cout << "Unesite mjesec (1-12): ";
+                std::cin >> mjesec;
+                std::cout << "Unesite godinu (YYYY): ";
+                std::cin >> godina;
+                izvjestaj.generisiMjesecniIzvjestaj(mjesec, godina);
+                break;
+            }
+            case 4:
+                std::cout << "Izlaz...\n";
+                break;
+            default:
+                std::cout << "Nepoznata opcija. Pokusajte ponovo.\n";
+                break;
+        }
+    } while (opcija != 4);
+}
 };
+
+
+
+
 
