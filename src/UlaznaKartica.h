@@ -18,8 +18,27 @@ public:
 
     void setKartica(const Parking& p)
     {
-        std::cout << "Unesite tablicu: ";
-        std::cin >> tablica;
+        while (tablica.empty())
+        {
+            std::cout << "Unesite tablicu: ";
+            std::cin >> tablica;
+
+            bool valid = true;
+            for (char ch : tablica)
+            {
+                if (!(isdigit(ch) || isalpha(ch) || ch == '-'))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid)
+            {
+                std::cout << "Tablica moze sadrzavati samo slova, brojeve ili '-'! Pokusajte ponovno.\n";
+                tablica.clear();
+            }
+        }
 
         time_t vrijeme = time(nullptr);
         struct tm datetime = *localtime(&vrijeme);
