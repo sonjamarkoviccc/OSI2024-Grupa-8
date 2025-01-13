@@ -1,6 +1,6 @@
 Račun za plaćanje parkinga
 --------------------------------
-Datum i vrijeme: 13-01-2025 19:15:33
-Nacin naplate: Invalidska kartica
+Datum i vrijeme: 13-01-2025 19:27:46
+Nacin naplate: Gotovina
 Cijena parkinga: 2.50 KM
 Hvala Vam na posjeti!

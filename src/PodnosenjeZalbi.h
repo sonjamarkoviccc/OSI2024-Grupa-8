@@ -10,6 +10,7 @@ public:
     {
         std::string tekstZalbe;
         std::cout << "Unesite tekst zalbe: ";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::getline(std::cin, tekstZalbe);
 
         std::ofstream file("../files/zalbe.txt", std::ios::app); 
@@ -23,7 +24,7 @@ public:
 
         // Formatiraj novu zalbu
         std::stringstream ss;
-        ss << poslednjiBroj + 1 << "|" << tekstZalbe << "|aktivna|\n";
+        ss << poslednjiBroj + 1 << " | " << tekstZalbe << " | aktivna |\n";
 
         // Upisivanje nove zalbe u fajl
         file << ss.str();

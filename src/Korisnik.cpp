@@ -41,6 +41,7 @@ int main()
             izlaz.pretraziTablicu(tablice, parking);
             std::string odgovor;
             std::cout << "Da li imate ikakvih zalbi? (Da/Ne): ";
+            std::cin >> odgovor;
             if (odgovor == "Da")
             {
                 zalba.unesiZalbu();
