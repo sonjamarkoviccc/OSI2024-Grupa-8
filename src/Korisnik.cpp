@@ -8,10 +8,10 @@
 int main()
 {
     // Dobar dan, na parkingu ima X praznih mjesta - Parking.h
-    Parking parking(50);
+    Parking parking(50, "ZONA1");
     // Unesite broj tablice
     UlaznaKartica kartica;
-    kartica.setKartica();
+    kartica.setKartica(parking);
     auto auto1 = std::make_shared<Auto>(kartica.getTablica());
     // Ulazak na parking
     parking.parkiraj(50, auto1);

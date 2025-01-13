@@ -88,7 +88,6 @@ class BankarskaKartica
                     exit(EXIT_FAILURE);
                 }
 
-                // Temporary file to write updated data
                 std::ofstream tempFile("../files/temp.txt");
                 if (!tempFile)
                 {
@@ -102,7 +101,7 @@ class BankarskaKartica
                 {
                     if (fileIdKartice == idKartice)
                     {
-                        fileStanje = stanje; // Update stanje for the matching record
+                        fileStanje = stanje;
                     }
                     tempFile << fileIdKartice << " " << fileIme << " " << filePrezime << " " << fileStanje << "\n";
                 }
@@ -110,7 +109,6 @@ class BankarskaKartica
                 inputFile.close();
                 tempFile.close();
 
-                // Replace the original file with the updated file
                 if (remove(fileName.c_str()) != 0 || rename("../files/temp.txt", fileName.c_str()) != 0)
                 {
                     std::cerr << "Greška prilikom ažuriranja fajla.\n";

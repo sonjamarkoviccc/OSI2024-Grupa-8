@@ -14,7 +14,7 @@ private:
     // void prijava(const char* fajl);
 
 public:
-    Operater() : konflikt("../files/zalbe.txt"), parking(10) {}
+    Operater() : konflikt("../files/zalbe.txt"), parking(10, "ZONA1") {}
 
     void prijava(const char *fajl);
     void prikazParkiranihVozila();
