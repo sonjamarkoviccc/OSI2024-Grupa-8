@@ -9,6 +9,7 @@
 #include "BankarskaKartica.h"
 #include "MjesecnaKartica.h"
 #include "InvalidskaKartica.h"
+#include "Parking.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ public:
     Izlaz(const string &fajl) : imeFajla(fajl) {}
 
     // Metod za pretragu po imenu tablice
-    void pretraziTablicu(const string &imeTablice)
+    void pretraziTablicu(const string &imeTablice, Parking &parking)
     {
         ifstream fajl(imeFajla);
         if (!fajl.is_open())
@@ -38,19 +39,17 @@ public:
         {
             stringstream ss(linija);
             string ime, zona, dan, vrijeme;
-            ss >> ime >> zona >> dan >> vrijeme;
+            int mjesto;
+            ss >> ime >> zona >> dan >> vrijeme >> mjesto;
 
             if (ime == imeTablice)
             {
                 cout << "Pronadjena linija: " << linija << endl;
 
-                // Trenutno vrijeme
+                // Calculate parking fee
                 auto sada = chrono::system_clock::now();
                 time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
                 tm *trenutnoVrijemeTm = localtime(&trenutnoVrijeme);
-                cout << "Trenutno vrijeme: " << put_time(trenutnoVrijemeTm, "%H:%M:%S") << endl;
-
-                cout << "Vrijeme dolaska na parking: " << vrijeme << endl;
 
                 int vrijemeProvedenoSekunde = izracunajVrijeme(vrijeme, trenutnoVrijemeTm);
                 if (vrijemeProvedenoSekunde < 0)
@@ -60,14 +59,27 @@ public:
                 }
 
                 string tipDana = (dan == "Sat" || dan == "Sun") ? "VIKEND" : "RADNI";
-
                 double cijena = pronadjiCijenu(zona, tipDana, vrijemeProvedenoSekunde);
+
                 if (cijena >= 0)
                 {
                     cout << "Cijena parkinga: " << fixed << setprecision(2) << cijena << " KM" << endl;
 
-                    // Izbor nacina placanja
+                    // Process payment
                     izborPlacanja(cijena);
+
+                    // Confirm 30-second exit
+                    time_t vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now());
+                    bool izlazakMoguc = provjeriIzlazak(vrijemePlacanja);
+
+                    if (izlazakMoguc)
+                    {
+                        parking.isparkiraj(mjesto, imeTablice);
+                    }
+                    else
+                    {
+                        cout << "Morate ponovo platiti za izlazak." << endl;
+                    }
                 }
                 else
                 {
@@ -125,7 +137,7 @@ public:
         ifstream cjenovnik("../files/cjenovnik.txt");
         if (!cjenovnik.is_open())
         {
-            cerr << "Greska: Ne mogu da otvorim fajl cjenovnik.txt" << endl;
+            cerr << "Greska: Problem sa otvaranjem datoteke." << endl;
             return -1;
         }
 
@@ -180,27 +192,28 @@ public:
         return -1; 
     }
     // Funkcija za proveru izlaska sa parkinga
-static bool provjeriIzlazak(const time_t &vrijemePlacanja)
-{
-    
-    // Trenutno vrijeme
-    auto sada = chrono::system_clock::now();
-    time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
-
-    // Razlika u sekundama između trenutnog vremena i vremena plaćanja
-    int protekloVrijemeSekunde = difftime(trenutnoVrijeme, vrijemePlacanja);
-
-    if (protekloVrijemeSekunde <= 30)
+    static bool provjeriIzlazak(const time_t &vrijemePlacanja)
     {
-        cout << "Izlazak sa parkinga dozvoljen. Rampa se diže." << endl;
-        return true;
+        
+        // Trenutno vrijeme
+        auto sada = chrono::system_clock::now();
+        time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
+
+        // Razlika u sekundama između trenutnog vremena i vremena plaćanja
+        int protekloVrijemeSekunde = difftime(trenutnoVrijeme, vrijemePlacanja);
+
+        if (protekloVrijemeSekunde <= 30)
+        {
+            cout << "Izlazak sa parkinga dozvoljen. Rampa se diže." << endl;
+            // izlazak sa parkinga
+            return true;
+        }
+        else
+        {
+            cout << "Izlazak nije moguć. Ponovno izvršite plaćanje." << endl;
+            return false;
+        }
     }
-    else
-    {
-        cout << "Izlazak nije moguć. Ponovno izvršite plaćanje." << endl;
-        return false;
-    }
-}
 
 
     
@@ -239,8 +252,6 @@ static void izborPlacanja(double cijena)
     int izbor;
     cin >> izbor;
 
-    time_t vrijemePlacanja; // Deklarišemo promenljivu za vreme plaćanja
-
     switch (izbor)
     {
     case 1:
@@ -264,8 +275,6 @@ static void izborPlacanja(double cijena)
         }
 
         kartica.placanje(cijena);
-
-        vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now()); // Ovde dodajemo zapis vremena plaćanja
         generisiRacun("Bankarska kartica", cijena);
 
         break;
@@ -289,8 +298,6 @@ static void izborPlacanja(double cijena)
             {
                 cout << "Placanje uspjesno. Kusur: " << fixed << setprecision(2) << uplaceniIznos - preostaliIznos << " KM." << endl;
                 preostaliIznos = 0;
-
-                vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now()); // Ovde dodajemo zapis vremena plaćanja
                 generisiRacun("Gotovina", cijena);
             }
 
@@ -299,7 +306,9 @@ static void izborPlacanja(double cijena)
     }
     case 3:
     {
+        std::string Ime, Prezime, dIzdaje, dIsteka;
         MjesecnaKartica karta;
+        karta.getKartica(Ime, Prezime, dIzdaje, dIsteka);
         if (!karta.jeValidna())
         {
             cout << "Karta nije validna. Izdavanje nove karte..." << endl;
@@ -308,8 +317,6 @@ static void izborPlacanja(double cijena)
         if (karta.jeValidna())
         {
             cout << "Placanje uspjesno." << endl;
-
-            vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now()); // Ovde dodajemo zapis vremena plaćanja
             generisiRacun("Mjesecna kartica", cijena);
         }
         break;
@@ -326,20 +333,11 @@ static void izborPlacanja(double cijena)
         {
             cout << "Placanje uspjesno." << endl;
 
-            vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now()); // Ovde dodajemo zapis vremena plaćanja
-            generisiRacun("Invalidska kartica", cijena);
         }
         break;
     }
     default:
         cout << "Nepoznata opcija." << endl;
-    }
-
-    // Proveriti izlazak sa parkinga
-    bool izlazakMoguc = provjeriIzlazak(vrijemePlacanja);
-    if (!izlazakMoguc) {
-        cout << "Vraćate se na ponovno plaćanje..." << endl;
-        izborPlacanja(cijena);
     }
 }
 

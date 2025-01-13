@@ -82,4 +82,19 @@ public:
     const std::string& getIme() const { return ime; }
     const std::string& getPrezime() const { return prezime; }
     const std::string& getDatumIzdaje() const { return datumIzdaje; }
+
+    void setIme(std::string uIme)
+    {
+        ime = uIme;
+    }
+
+    void setPrezime(std::string uPrezime)
+    {
+        prezime = uPrezime;
+    }
+
+    void setDatumIzdaje(std::string dIzdaje)
+    {
+        datumIzdaje = dIzdaje;
+    }
 };

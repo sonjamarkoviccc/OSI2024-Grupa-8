@@ -17,7 +17,7 @@ public:
     Parking(int ukupnoMjesta, std::string parkingZona)
         : ukupnoMjesta(ukupnoMjesta), parkingZona(parkingZona),  slobodnaMjesta(ukupnoMjesta), parkingMjesta(ukupnoMjesta, nullptr) {}
 
-    bool parkiraj(int brojMjesta, const std::shared_ptr<Auto> &autoPtr)
+    bool parkiraj(int brojMjesta, std::shared_ptr<Auto> &autoPtr)
     {
         if (brojMjesta < 0 || brojMjesta >= ukupnoMjesta)
         {
@@ -37,23 +37,23 @@ public:
         return true;
     }
 
-    bool isparkiraj(int brojMjesta)
+    bool isparkiraj(int mjesto, std::string registracija)
     {
-        if (brojMjesta < 0 || brojMjesta >= ukupnoMjesta)
+        if (mjesto < 0 || mjesto >= ukupnoMjesta)
         {
             std::cout << "Nevalidan broj parking mjesta" << std::endl;
             return false;
         }
 
-        if (parkingMjesta[brojMjesta] == nullptr)
+        if (parkingMjesta[mjesto] == nullptr)
         {
-            std::cout << "Mjesto " << brojMjesta << "je vec slobodno." << std::endl;
+            std::cout << "Mjesto " << mjesto << "je vec slobodno." << std::endl;
             return false;
         }
-        parkingMjesta[brojMjesta] = nullptr;
+        parkingMjesta[mjesto] = nullptr;
         slobodnaMjesta++;
-        std::cout << "Vozilo sa registracijom " << parkingMjesta[brojMjesta]->getRegistracija()
-                  << " je isparkirano sa mjesta " << brojMjesta << std::endl;
+        std::cout << "Vozilo sa registracijom " << registracija
+                  << " je isparkirano sa mjesta " << mjesto << std::endl;
         return true;
     }
 
@@ -61,19 +61,21 @@ public:
     {
         std::cout << "Slobodnih mjesta: " << slobodnaMjesta << std::endl;
 
-        for (int i = 0; i < ukupnoMjesta; i++)
-        {
-            if (parkingMjesta[i] == nullptr)
-            {
-                std::cout << "Mjesto " << i << " : slobodno" << std::endl;
-            }
-            else
-            {
-                std::cout << "Mjesto " << i << ": Zauzeto (Registracija: " << parkingMjesta[i]->getRegistracija()
-                          << ")" << std::endl;
-            }
-        }
+        // for (int i = 0; i < ukupnoMjesta; i++)
+        // {
+        //     if (parkingMjesta[i] == nullptr)
+        //     {
+        //         std::cout << "Mjesto " << i << " : slobodno" << std::endl;
+        //     }
+        //     else
+        //     {
+        //         std::cout << "Mjesto " << i << ": Zauzeto (Registracija: " << parkingMjesta[i]->getRegistracija()
+        //                   << ")" << std::endl;
+        //     }
+        // }
     }
 
     std::string getZona() const { return parkingZona; }
+    int getSlobodnaMjesta() const { return slobodnaMjesta; }
+    int getUkupnoMjesta() const { return ukupnoMjesta; }
 };

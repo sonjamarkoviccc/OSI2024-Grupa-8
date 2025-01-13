@@ -4,35 +4,55 @@
 #include "Parking.h"
 #include "Auto.h"
 #include "Konflikt.h"
+#include "Izlaz.h"
 
 int main()
 {
-    // Dobar dan, na parkingu ima X praznih mjesta - Parking.h
     Parking parking(50, "ZONA1");
-    // Unesite broj tablice
-    UlaznaKartica kartica;
-    kartica.setKartica(parking);
-    auto auto1 = std::make_shared<Auto>(kartica.getTablica());
-    // Ulazak na parking
-    parking.parkiraj(50, auto1);
-    std::string izlaz;
-    // Kada korisnik bude htio izaci unese "da", "1", mozda klikne "Enter"???
-    while(izlaz.empty() || izlaz != "Da" || izlaz != "Yes")
-    {
-        std::cout << "Da li izlazite? (Da/Yes): ";
-        std::cin >> izlaz;
-    }
-    // Hvala na posjeti????? Da li imate nekih zalbi, ako da mozete ih ovdje podnijeti
-    std::string zalbe;
-    std::cout << "Hvala na posjeti da li imate neke zalbe? (Da/Ne)";
-    std::cin >> zalbe;
-    if (zalbe == "Da")
-    {
+    std::string izbor;
 
+    while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
+    {
+        parking.prikazSlobodnih();
+        std::cout << "Da li ulazite ili izlazite sa parkinga? ((1) Ulazak/(2) Izlazak): ";
+        std::cin >> izbor;
+
+        if (izbor == "1")
+        {
+            UlaznaKartica kartica;
+            kartica.setKartica(parking);
+            auto auto1 = std::make_shared<Auto>(kartica.getTablica());
+            int slobodnoMjesto = rand() % parking.getSlobodnaMjesta();
+            while (!parking.parkiraj(slobodnoMjesto, auto1))
+            {
+                slobodnoMjesto = rand() % parking.getSlobodnaMjesta();
+            }
+            kartica.pisiKarticu(slobodnoMjesto);
+        }
+        else if (izbor == "2")
+        {
+            Izlaz izlaz("../files/tablice.txt");
+            string tablice;
+            std::cout << "Molim Vas unesite tablice: ";
+            std::cin >> tablice;
+            izlaz.pretraziTablicu(tablice, parking);
+        }
+        else if (izbor == "0")
+        {
+            if (parking.getSlobodnaMjesta() == parking.getUkupnoMjesta())
+            {
+                std::cout << "Kraj rada parkinga." << std::endl;
+                system("pause");
+                return 0;
+            }
+            else {
+                std::cout << "Ima jos auta na parkingu, sacekajte jos malo." << std::endl;
+            }
+        }
+        else
+        {
+            cout << "Nepoznata opcija. Pokusajte ponovo." << endl;
+        }
     }
-    // Obracunava cijenu i pita za nacin placanja
-    // Bankarska kartica
-    // Mjesecna kartica
-    // Invalidska kartica
     return 0;
 }

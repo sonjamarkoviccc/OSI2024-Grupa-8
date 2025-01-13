@@ -70,4 +70,55 @@ public:
     std::string getPrezime() const { return prezime; }
     std::string getDatumIzdaje() const { return datumIzdaje; }
     std::string getDatumIsteka() const { return datumIsteka; }
+
+    void setIme(std::string uIme)
+    {
+        ime = uIme;
+    }
+
+    void setPrezime(std::string uPrezime)
+    {
+        prezime = uPrezime;
+    }
+
+    void setDatumIzdaje(std::string dIzdaje)
+    {
+        datumIzdaje = dIzdaje;
+    }
+
+    void setDatumIsteka(std::string dIsteka)
+    {
+        datumIsteka = dIsteka;
+    }
+
+    void getKartica(std::string& Ime, std::string& Prezime, std::string& dIzdaje, std::string& dIsteka)
+    {
+        std::ifstream mjesecne("../files/mjesecneKartice.txt");
+        if (!mjesecne) {
+            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
+            return;
+        }
+
+        std::string uIme, uPrezime;
+
+        std::cout << "Unesite ime i prezime: ";
+        std::cin >> uIme >> uPrezime;
+
+        std::string line;
+        std::getline(mjesecne, line);
+        std::getline(mjesecne, line);
+
+        while (std::getline(mjesecne, line))
+        {
+            std::stringstream ss(line);
+
+            ss >> Ime >> Prezime >> dIzdaje >> dIsteka;
+
+            if (uIme == Ime && uPrezime == Prezime)
+            {
+                break;
+            }
+        }
+
+    }
 };

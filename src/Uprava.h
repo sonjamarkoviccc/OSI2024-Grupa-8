@@ -99,14 +99,14 @@ public:
     void izdavanjeMjesecneKarte(MjesecnaKartica& mjesecna)
     {
         mjesecna.izdajaKartice();
-        std::cout << "Uspjesno dodata mjesecna kartica.\n" << "Ime: " << mjesecna.getIme() << "\n"
+        std::cout << "Uspjesno izdata mjesecna kartica.\n" << "Ime: " << mjesecna.getIme() << "\n"
                   << "Prezime: " << mjesecna.getPrezime() << "\n" << "Datum Izdaje: " << mjesecna.getDatumIzdaje() << "\n"
                   << "Datum Isteka: " << mjesecna.getDatumIsteka() << std::endl;
     }
     void izdavanjeInvalidskeKarte(InvalidskaKartica& invalidska)
     {
         invalidska.izdajaKartice();
-        std::cout << "Uspjesno dodata invalidska kartica.\n" << "Ime: " << invalidska.getIme() << "\n"
+        std::cout << "Uspjesno izdata invalidska kartica.\n" << "Ime: " << invalidska.getIme() << "\n"
                   << "Prezime: " << invalidska.getPrezime() << "\n" << "Datum Izdaje: " << invalidska.getDatumIzdaje() << std::endl;
     }
     void upravljanjeNalozimaOpcije(const char *fajl);

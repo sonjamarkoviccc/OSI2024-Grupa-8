@@ -10,9 +10,10 @@ private:
     std::string pocetnoVrijeme;
     std::string zona;
     std::string dan;
+    int parkingMjesto;
 
 public:
-    UlaznaKartica() = default;
+    UlaznaKartica() : parkingMjesto(-1) {};
     ~UlaznaKartica() = default;
 
     void setKartica(const Parking& p)
@@ -31,13 +32,17 @@ public:
         char d[5];
         strftime(d, sizeof(d), "%a", &datetime);
         dan = d;
+    }
 
+    void pisiKarticu(int mjesto)
+    {
+        parkingMjesto = mjesto;
         std::ofstream spisakTablica("../files/tablice.txt", std::ios::app);
         if (!spisakTablica) {
             std::cerr << "Greska pri otvaranju datoteke." << std::endl;
             return;
         }
-        spisakTablica << tablica << " " << zona << " " << dan << " " << pocetnoVrijeme << "\n";
+        spisakTablica << tablica << " " << zona << " " << dan << " " << pocetnoVrijeme << " " << parkingMjesto << "\n";
     }
 
     std::string getTablica() const { return tablica; }
