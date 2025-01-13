@@ -74,7 +74,7 @@ class BankarskaKartica
             return 0;
         }
 
-        void placanje(double iznos)
+        bool placanje(double iznos)
         {
             if (stanje >= iznos)
             {
@@ -85,6 +85,7 @@ class BankarskaKartica
                 if (!inputFile)
                 {
                     std::cerr << "Greška prilikom otvaranja fajla za čitanje.\n";
+                    return false;
                     exit(EXIT_FAILURE);
                 }
 
@@ -92,6 +93,7 @@ class BankarskaKartica
                 if (!tempFile)
                 {
                     std::cerr << "Greška prilikom otvaranja fajla za pisanje.\n";
+                    return false;
                     exit(EXIT_FAILURE);
                 }
 
@@ -112,12 +114,15 @@ class BankarskaKartica
                 if (remove(fileName.c_str()) != 0 || rename("../files/temp.txt", fileName.c_str()) != 0)
                 {
                     std::cerr << "Greška prilikom ažuriranja fajla.\n";
+                    return false;
                     exit(EXIT_FAILURE);
                 }
+                return true;
             }
             else
             {
                 std::cout << "Nemate dovoljno na stanju.\n";
+                return false;
             }
 
         }

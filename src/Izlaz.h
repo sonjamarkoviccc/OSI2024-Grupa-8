@@ -65,12 +65,29 @@ public:
                 {
                     cout << "Cijena parkinga: " << fixed << setprecision(2) << cijena << " KM" << endl;
 
-                    // Process payment
-                    izborPlacanja(cijena);
+                    bool placeno = false;
 
-                    // Confirm 30-second exit
+                    while (!placeno)
+                    {
+                        izborPlacanja(cijena, placeno);
+                    }
+                    
                     time_t vrijemePlacanja = chrono::system_clock::to_time_t(chrono::system_clock::now());
-                    bool izlazakMoguc = provjeriIzlazak(vrijemePlacanja);
+                    bool izlazakMoguc;
+                    std::string izlaz;
+
+                    if (placeno)
+                    {
+                        std::cout << "Da li ste spremni da izadjete? (Da/Ne): ";
+                        while (izlaz.empty() || izlaz != "Da")
+                        {
+                            std::cin >> izlaz;
+                        }
+                        izlazakMoguc = provjeriIzlazak(vrijemePlacanja);
+                    }
+                    else {
+                        izlazakMoguc = false;
+                    }
 
                     if (izlazakMoguc)
                     {
@@ -246,7 +263,7 @@ public:
     racunFile << racunContent.str();
     racunFile.close();
 }
-static void izborPlacanja(double cijena)
+static void izborPlacanja(double cijena, bool& placeno)
 {
     cout << "Odaberite nacin placanja:\n1. Bankarska kartica\n2. Gotovina\n3. Mjesecna karta\n4. Invalidska kartica" << endl;
     int izbor;
@@ -265,16 +282,18 @@ static void izborPlacanja(double cijena)
         if (!kartica.imaRacun(idKartice))
         {
             cout << "Kartica nije registrovana u banci." << endl;
+            placeno = false;
             return;
         }
 
         if (!kartica.jeValidna())
         {
             cout << "Kartica nije validna." << endl;
+            placeno = false;
             return;
         }
 
-        kartica.placanje(cijena);
+        placeno = kartica.placanje(cijena);
         generisiRacun("Bankarska kartica", cijena);
 
         break;
@@ -302,6 +321,7 @@ static void izborPlacanja(double cijena)
             }
 
         } while (preostaliIznos > 0);
+        placeno = true;
         break;
     }
     case 3:
@@ -318,10 +338,13 @@ static void izborPlacanja(double cijena)
         if (!mKarta.jeValidna())
         {
             cout << "Karta nije validna. Izaberite drugi nacin placanja" << endl;
+            placeno = false;
+            return;
         }
         if (mKarta.jeValidna())
         {
             cout << "Placanje uspjesno." << endl;
+            placeno = true;
             generisiRacun("Mjesecna kartica", cijena);
         }
         break;
@@ -339,16 +362,20 @@ static void izborPlacanja(double cijena)
         if (!imaKarte)
         {
             cout << "Karta nije validna. Izaberite drugi nacin placanja." << endl;
+            placeno = false;
+            return;
         }
         if (imaKarte)
         {
             cout << "Placanje uspjesno." << endl;
+            placeno = true;
             generisiRacun("Invalidska kartica", cijena);
         }
         break;
     }
     default:
         cout << "Nepoznata opcija." << endl;
+        placeno = false;
     }
 }
 

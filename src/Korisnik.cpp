@@ -17,7 +17,7 @@ int main()
     while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
     {
         parking.prikazSlobodnih();
-        std::cout << "Da li ulazite ili izlazite sa parkinga? ((1) Ulazak/(2) Izlazak): ";
+        std::cout << "Da li ulazite ili izlazite sa parkinga?\n1. Ulazak\n2. Izlazak\nIzbor: ";
         std::cin >> izbor;
 
         if (izbor == "1")
@@ -34,17 +34,23 @@ int main()
         }
         else if (izbor == "2")
         {
-            Izlaz izlaz("../files/tablice.txt");
-            string tablice;
-            std::cout << "Molim Vas unesite tablice: ";
-            std::cin >> tablice;
-            izlaz.pretraziTablicu(tablice, parking);
-            std::string odgovor;
-            std::cout << "Da li imate ikakvih zalbi? (Da/Ne): ";
-            std::cin >> odgovor;
-            if (odgovor == "Da")
+            if (parking.getSlobodnaMjesta() < 50)
             {
-                zalba.unesiZalbu();
+                Izlaz izlaz("../files/tablice.txt");
+                string tablice;
+                std::cout << "Molim Vas unesite tablice: ";
+                std::cin >> tablice;
+                izlaz.pretraziTablicu(tablice, parking);
+                std::string odgovor;
+                std::cout << "Da li imate ikakvih zalbi? (Da/Ne): ";
+                std::cin >> odgovor;
+                if (odgovor == "Da")
+                {
+                    zalba.unesiZalbu();
+                }
+            }
+            else {
+                std::cout << "Parking je prazan." << std::endl;
             }
         }
         else if (izbor == "0")
