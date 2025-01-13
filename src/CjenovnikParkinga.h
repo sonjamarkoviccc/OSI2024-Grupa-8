@@ -2,15 +2,15 @@
 #include <fstream>
 #include <string>
 
-struct Cjenovnik {
-    std::string zona;
-    std::string dan;
-    std::string vrijeme;
-    std::string cijena;
-};
 
 class CjenovnikParkinga {
 private:
+    struct Cjenovnik {
+    std::string zona;
+    std::string dan;
+    std::string vrijeme; 
+    std::string cijena;
+};
     const std::string ime_fajla = "cjenovnik.txt";
     Cjenovnik* cijene; 
     int kapacitivnost;      
@@ -77,7 +77,7 @@ public:
             }
         }
         
-        std::cout << "Cijena nije pronađena.\n";
+        std::cout << "Cijena nije pronadjena.\n";
     }
 
     void prikaziMeni() const {
@@ -88,41 +88,10 @@ public:
                   << "Izaberite opciju: ";
     }
 
-    void pokreniProgram() {
-        int izbor;
-        do {
-            prikaziMeni();
-            std::cin >> izbor;
-            std::cin.ignore();
-
-            if (izbor == 1) {
-                std::string zona, dan, vrijeme, cijena;
-                std::cout << "Unesite zonu: ";
-                std::getline(std::cin, zona);
-                std::cout << "Unesite dan (radni, vikend, praznik): ";
-                std::getline(std::cin, dan);
-                std::cout << "Unesite vrijeme: ";
-                std::getline(std::cin, vrijeme);
-                std::cout << "Unesite cijenu: ";
-                std::getline(std::cin, cijena);
-
-                postaviCijenu(zona, dan, vrijeme, cijena);
-
-            } else if (izbor == 2) {
-                std::string zona, dan, vrijeme;
-                std::cout << "Unesite zonu: ";
-                std::getline(std::cin, zona);
-                std::cout << "Unesite dan (radni, vikend, praznik): ";
-                std::getline(std::cin, dan);
-                std::cout << "Unesite vrijeme: ";
-                std::getline(std::cin, vrijeme);
-
-                nadjiCijenu(zona, dan, vrijeme);
-
-            } else if (izbor != 3) {
-                std::cout << "Nepoznata opcija.\n";
-            }
-        } while (izbor != 3);
-    }
+   
 };
+
+
+
+
 

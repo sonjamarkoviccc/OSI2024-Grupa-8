@@ -68,15 +68,15 @@ void Uprava::prikaziMogucnostiUprave()
         switch (izbor)
         {
         case 1: {
-            CjenovnikParkinga cjenovnik;
-            definisanjeCjenovnika(cjenovnik);
+            CjenovnikParkinga cenovnik;
+            definisanjeCjenovnika(cenovnik);
             break;
-        }
+        }    
         case 2: {
-            Izvjestaj izvjestaj;
-            izvjestajORadu(izvjestaj);
+            Izvjestaj izvestaj;
+            izvjestajORadu(izvestaj);
             break;
-        }
+        }  
         case 3: {
             MjesecnaKartica mk;
             izdavanjeMjesecneKarte(mk);
