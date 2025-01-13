@@ -37,46 +37,7 @@ public:
             return;
         }
 
-        bazaInvalida << std::left << std::setw(16) << ime 
-                     << std::setw(20) << prezime 
-                     << std::setw(12) << datumIzdaje 
-                     << '\n';
-    }
-
-    bool jeValidna() {
-        std::ifstream baza("../files/invalidskeKartice.txt");
-        if (!baza) {
-            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
-            return false;
-        }
-
-        std::string iIme, iPrezime, iDatum;
-        std::cout << "Unesite informacije vase kartice: \n";
-        std::cout << "Ime: ";
-        std::getline(std::cin, iIme);
-        std::cout << "Prezime: ";
-        std::getline(std::cin, iPrezime);
-        std::cout << "Datum Izdaje: ";
-        std::getline(std::cin, iDatum);
-
-        std::string line;
-        std::getline(baza, line);
-        std::getline(baza, line);
-
-        while (std::getline(baza, line)) {
-            std::string name = line.substr(0, 16);
-            std::string surname = line.substr(16, 20);
-            std::string date = line.substr(36, 6);
-
-            name.erase(name.find_last_not_of(' ') + 1);
-            surname.erase(surname.find_last_not_of(' ') + 1);
-
-            if (name == iIme && surname == iPrezime && date == iDatum) {
-                return true;
-            }
-        }
-
-        return false;
+        bazaInvalida << ime << " " << prezime << " " << datumIzdaje << " " << std::endl;
     }
 
     const std::string& getIme() const { return ime; }
@@ -96,5 +57,29 @@ public:
     void setDatumIzdaje(std::string dIzdaje)
     {
         datumIzdaje = dIzdaje;
+    }
+
+    bool getKartica(std::string& uIme, std::string& uPrezime)
+    {
+        std::ifstream invalidske("../files/invalidskeKartice.txt");
+        if (!invalidske) {
+            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
+            return false;
+        }
+
+        std::string line;
+
+        while (std::getline(invalidske, line))
+        {
+            std::stringstream ss(line);
+
+            ss >> ime >> prezime >> datumIzdaje;
+
+            if (!ime.compare(uIme) && !prezime.compare(uPrezime))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 };

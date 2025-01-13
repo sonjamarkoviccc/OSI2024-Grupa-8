@@ -5,10 +5,13 @@
 #include "Auto.h"
 #include "Konflikt.h"
 #include "Izlaz.h"
+#include "PodnosenjeZalbi.h"
 
 int main()
 {
     Parking parking(50, "ZONA1");
+    PodnosenjeZalbi zalba;
+
     std::string izbor;
 
     while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
@@ -36,6 +39,12 @@ int main()
             std::cout << "Molim Vas unesite tablice: ";
             std::cin >> tablice;
             izlaz.pretraziTablicu(tablice, parking);
+            std::string odgovor;
+            std::cout << "Da li imate ikakvih zalbi? (Da/Ne): ";
+            if (odgovor == "Da")
+            {
+                zalba.unesiZalbu();
+            }
         }
         else if (izbor == "0")
         {

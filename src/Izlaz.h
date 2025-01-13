@@ -306,15 +306,20 @@ static void izborPlacanja(double cijena)
     }
     case 3:
     {
-        std::string Ime, Prezime, dIzdaje, dIsteka;
-        MjesecnaKartica karta;
-        karta.getKartica(Ime, Prezime, dIzdaje, dIsteka);
-        if (!karta.jeValidna())
+        MjesecnaKartica mKarta;
+        std::string uIme, uPrezime;
+
+        std::cout << "Unesite ime: ";
+        std::cin >> uIme;
+        std::cout << "Unesite prezime: ";
+        std::cin >> uPrezime;
+
+        mKarta.getKartica(uIme, uPrezime);
+        if (!mKarta.jeValidna())
         {
-            cout << "Karta nije validna. Izdavanje nove karte..." << endl;
-            karta.izdajaKartice();
+            cout << "Karta nije validna. Izaberite drugi nacin placanja" << endl;
         }
-        if (karta.jeValidna())
+        if (mKarta.jeValidna())
         {
             cout << "Placanje uspjesno." << endl;
             generisiRacun("Mjesecna kartica", cijena);
@@ -323,16 +328,22 @@ static void izborPlacanja(double cijena)
     }
     case 4:
     {
-        InvalidskaKartica karta;
-        if (!karta.jeValidna())
+        InvalidskaKartica iKarta;
+        std::string uIme, uPrezime;
+
+        std::cout << "Unesite ime: ";
+        std::cin >> uIme;
+        std::cout << "Unesite prezime: ";
+        std::cin >> uPrezime;
+        bool imaKarte = iKarta.getKartica(uIme, uPrezime);
+        if (!imaKarte)
         {
-            cout << "Karta nije validna. Izdavanje nove karte..." << endl;
-            karta.izdajaKartice();
+            cout << "Karta nije validna. Izaberite drugi nacin placanja." << endl;
         }
-        if (karta.jeValidna())
+        if (imaKarte)
         {
             cout << "Placanje uspjesno." << endl;
-
+            generisiRacun("Invalidska kartica", cijena);
         }
         break;
     }

@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <cstring>
 
 class MjesecnaKartica {
 private:
@@ -48,10 +49,7 @@ public:
             std::cerr << "Greska pri otvaranju datoteke." << std::endl;
             return;
         }
-        bazaMjesecne << std::left << std::setw(16) << ime
-                     << std::setw(20) << prezime
-                     << std::setw(12) << datumIzdaje
-                     << std::setw(12) << datumIsteka << '\n';
+        bazaMjesecne << ime << " " << prezime << " " << datumIzdaje << " " << datumIsteka << std::endl;
     }
 
     bool jeValidna() const {
@@ -91,18 +89,13 @@ public:
         datumIsteka = dIsteka;
     }
 
-    void getKartica(std::string& Ime, std::string& Prezime, std::string& dIzdaje, std::string& dIsteka)
+    void getKartica(std::string& uIme, std::string& uPrezime)
     {
         std::ifstream mjesecne("../files/mjesecneKartice.txt");
         if (!mjesecne) {
             std::cerr << "Greska pri otvaranju datoteke." << std::endl;
             return;
         }
-
-        std::string uIme, uPrezime;
-
-        std::cout << "Unesite ime i prezime: ";
-        std::cin >> uIme >> uPrezime;
 
         std::string line;
         std::getline(mjesecne, line);
@@ -112,9 +105,9 @@ public:
         {
             std::stringstream ss(line);
 
-            ss >> Ime >> Prezime >> dIzdaje >> dIsteka;
+            ss >> ime >> prezime >> datumIzdaje >> datumIsteka;
 
-            if (uIme == Ime && uPrezime == Prezime)
+            if (!ime.compare(uIme) && !prezime.compare(uPrezime))
             {
                 break;
             }
