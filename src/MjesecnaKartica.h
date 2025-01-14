@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <cstring>
+#include <limits>
 
 class MjesecnaKartica {
 private:
@@ -39,7 +39,9 @@ public:
         datumIsteka = temp2.str();
 
         std::cout << "Unesite ime: ";
-        std::getline(std::cin, ime);
+        std::cin >> ime;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         std::cout << "Unesite prezime: ";
         std::getline(std::cin, prezime);
@@ -98,8 +100,6 @@ public:
         }
 
         std::string line;
-        std::getline(mjesecne, line);
-        std::getline(mjesecne, line);
 
         while (std::getline(mjesecne, line))
         {

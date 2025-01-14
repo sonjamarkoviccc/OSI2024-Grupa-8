@@ -158,14 +158,12 @@ public:
             }
         }
 
-        std::string naslov = "Dnevni_izvjestaj:_" + datum;
+        std::string naslov = "Dnevni izvjestaj: " + datum;
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
 
-        std::string filepath = "../files/" + naslov;
-
-        sacuvajIzvjestajUFajl(filepath, brojPregledanih, ukupnaZarada);
+        sacuvajIzvjestajUFajl(naslov, brojPregledanih, ukupnaZarada);
     }
 
     void generisiNedeljniIzvjestaj(const std::string& startDatum, const std::string& endDatum) const {
@@ -179,14 +177,12 @@ public:
             }
         }
 
-        std::string naslov = "Nedeljni_izvjestaj:_" + startDatum + "_" + endDatum;
+        std::string naslov = "Nedeljni izvjestaj: " + startDatum + " - " + endDatum;
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
-        
-        std::string filepath = "../files/" + naslov;
 
-        sacuvajIzvjestajUFajl(filepath, brojPregledanih, ukupnaZarada);
+        sacuvajIzvjestajUFajl(naslov, brojPregledanih, ukupnaZarada);
     }
 
     void generisiMjesecniIzvjestaj(int mjesec, int godina) const {
@@ -202,14 +198,12 @@ public:
             }
         }
 
-        std::string naslov = "Mjesecni_izvjestaj:_" + std::to_string(mjesec) + "_godina:_" + std::to_string(godina);
+        std::string naslov = "Mjesecni izvjestaj: " + std::to_string(mjesec) + " " + std::to_string(godina);
         std::cout << naslov << "\n"
                   << "Ukupan broj korisnika: " << brojPregledanih << "\n"
                   << "Ukupna zarada: " << ukupnaZarada << " KM\n";
 
-        std::string filepath = "../files/" + naslov;
-
-        sacuvajIzvjestajUFajl(filepath, brojPregledanih, ukupnaZarada);
+        sacuvajIzvjestajUFajl(naslov, brojPregledanih, ukupnaZarada);
     }
 
     void prikaziMeni() const {

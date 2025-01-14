@@ -27,7 +27,10 @@ public:
         datumIzdaje = dateStream.str();
 
         std::cout << "Unesite ime: ";
-        std::getline(std::cin, ime);
+        std::cin >> ime;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
         std::cout << "Unesite prezime: ";
         std::getline(std::cin, prezime);
 

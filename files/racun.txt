@@ -1,6 +1,6 @@
 Račun za plaćanje parkinga
 --------------------------------
-Datum i vrijeme: 14-01-2025 15:49:54
+Datum i vrijeme: 14-01-2025 18:46:44
 Nacin naplate: Gotovina
-Cijena parkinga: 2.50 KM
+Cijena parkinga: 4.00 KM
 Hvala Vam na posjeti!

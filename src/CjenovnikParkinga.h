@@ -11,7 +11,7 @@ private:
     std::string vrijeme; 
     std::string cijena;
 };
-    const std::string ime_fajla = "cjenovnik.txt";
+    const std::string ime_fajla = "../files/cjenovnik.txt";
     Cjenovnik* cijene; 
     int kapacitivnost;      
     int velicina;         

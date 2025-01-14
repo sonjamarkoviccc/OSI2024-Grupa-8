@@ -48,12 +48,90 @@ void park(int spot, const std::string& registracija)
     }
 }
 
+void unesiPodatke(const std::string tablice, const std::string datum, const std::string vrijeme)
+{
+    std::ofstream dat("../files/podaci.txt", std::ios::app);
+    if (!dat.is_open())
+    {
+        std::cerr << "Error: Neuspjesno otvaranje datoteke.\n";
+        return;
+    }
+
+    dat << tablice << " " << datum << " " << vrijeme << std::endl;
+
+    dat.close();
+}
+
+std::string getFormattedDate()
+{
+    std::time_t t = std::time(nullptr);
+    std::tm* now = std::localtime(&t);
+
+    std::ostringstream dateStream;
+    dateStream << std::setw(2) << std::setfill('0') << now->tm_mday << "."
+               << std::setw(2) << std::setfill('0') << (now->tm_mon + 1) << "."
+               << (now->tm_year + 1900);
+
+    return dateStream.str();
+}
+
+std::string getFormattedTime()
+{
+    std::time_t t = std::time(nullptr);
+    std::tm* now = std::localtime(&t);
+
+    std::ostringstream timeStream;
+    timeStream << std::setw(2) << std::setfill('0') << now->tm_hour << ":"
+               << std::setw(2) << std::setfill('0') << now->tm_min << ":"
+               << std::setw(2) << std::setfill('0') << now->tm_sec;
+
+    return timeStream.str();
+}
+
+bool jeNoviDan()
+{
+    time_t now = time(0);
+    tm *currentTime = localtime(&now);
+    int currentDay = currentTime->tm_mday;
+    int currentMonth = currentTime->tm_mon + 1;
+    int currentYear = currentTime->tm_year + 1900;
+
+    std::ifstream inFile("../files/last_run_date.txt");
+    int savedDay, savedMonth, savedYear;
+
+    if (inFile.is_open()) {
+        inFile >> savedDay >> savedMonth >> savedYear;
+        inFile.close();
+
+        if (currentYear > savedYear || currentMonth > savedMonth || currentDay > savedDay)
+        {
+            std::ofstream outFile("../files/last_run_date.txt");
+            outFile << currentDay << " " << currentMonth << " " << currentYear;
+            outFile.close();
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        std::ofstream outFile("../files/last_run_date.txt");
+        outFile << currentDay << " " << currentMonth << " " << currentYear;
+        outFile.close();
+        return true;
+    }
+}
+
 int main()
 {
     Parking parking(50, "ZONA1");
     PodnosenjeZalbi zalba;
 
     std::string izbor;
+
+    if (jeNoviDan())
+    {
+        std::ofstream file("../files/tablice.txt", std::ios::trunc);
+        file.close();
+    }
 
     while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
     {
@@ -73,6 +151,11 @@ int main()
             }
             kartica.pisiKarticu(slobodnoMjesto);
             park(slobodnoMjesto, kartica.getTablica());
+            time_t timestamp = time(NULL);
+            struct tm datetime = *localtime(&timestamp);
+            std::string date = getFormattedDate();
+            std::string time = getFormattedTime();
+            unesiPodatke(kartica.getTablica(), date, time);
         }
         else if (izbor == "2")
         {

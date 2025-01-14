@@ -60,6 +60,56 @@ private:
             exit(EXIT_FAILURE);
         }
     }
+    void azuriraj(int duration, double cost, std::string registracija)
+    {
+        std::string filename = "../files/podaci.txt";
+        std::ifstream inputFile(filename);
+        if (!inputFile.is_open()) {
+            std::cerr << "Error: Neuspjeno otvaranje datoteke.\n";
+            return;
+        }
+
+        std::ofstream tempFile("../files/tempPodaci.txt");
+        if (!tempFile.is_open()) {
+            std::cerr << "Error: Neuspjesno otvaranje temp datoteke.\n";
+            inputFile.close();
+            return;
+        }
+
+        std::string line;
+        bool updated = false;
+
+        while (std::getline(inputFile, line)) {
+            std::istringstream iss(line);
+            std::string plate, date, time;
+            int existingDuration;
+            double existingPrice;
+
+            iss >> plate >> date >> time;
+
+            if (plate == registracija) {
+                tempFile << plate << " " << date << " " << time << " " 
+                        << duration << " " << cost << "\n";
+                updated = true;
+            } else {
+                tempFile << line << "\n";
+            }
+        }
+
+        inputFile.close();
+        tempFile.close();
+
+        if (updated) {
+            if (remove(filename.c_str()) != 0 || rename("../files/tempPodaci.txt", filename.c_str()) != 0)
+            {
+                std::cerr << "Greška prilikom ažuriranja fajla.\n";
+                exit(EXIT_FAILURE);
+            }
+        } else {
+            std::cerr << "Error: Registracija nije pronadjena.\n";
+            std::remove("../files/tempPodaci.txt");
+        }
+    }
 
 public:
     // Konstruktor za inicijalizaciju fajla
@@ -135,6 +185,7 @@ public:
                     {
                         parking.isparkiraj(mjesto, imeTablice);
                         izlazakSaMjesta(imeTablice, mjesto);
+                        azuriraj(vrijemeProvedenoSekunde, cijena, imeTablice);
                     }
                     else
                     {
