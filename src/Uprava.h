@@ -54,47 +54,48 @@ public:
             }
         } while (izbor != 3);
     }
-    void izvjestajORadu(Izvjestaj& izvestaj){
-    int opcija;
-    do {
-        izvestaj.prikaziMeni();
-        std::cin >> opcija;
+    void izvjestajORadu(Izvjestaj& izvestaj)
+    {
+        int opcija;
+        do {
+            izvestaj.prikaziMeni();
+            std::cin >> opcija;
 
-        switch (opcija) {
-            case 1: {
-                std::string datum;
-                std::cout << "Unesite datum (DD.MM.YYYY): ";
-                std::cin >> datum;
-                izvestaj.generisiDnevniIzvjestaj(datum);
-                break;
+            switch (opcija) {
+                case 1: {
+                    std::string datum;
+                    std::cout << "Unesite datum (DD.MM.YYYY): ";
+                    std::cin >> datum;
+                    izvestaj.generisiDnevniIzvjestaj(datum);
+                    break;
+                }
+                case 2: {
+                    std::string startDatum, endDatum;
+                    std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
+                    std::cin >> startDatum;
+                    std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
+                    std::cin >> endDatum;
+                    izvestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
+                    break;
+                }
+                case 3: {
+                    int mjesec, godina;
+                    std::cout << "Unesite mjesec (1-12): ";
+                    std::cin >> mjesec;
+                    std::cout << "Unesite godinu (YYYY): ";
+                    std::cin >> godina;
+                    izvestaj.generisiMjesecniIzvjestaj(mjesec, godina);
+                    break;
+                }
+                case 4:
+                    std::cout << "Izlaz...\n";
+                    break;
+                default:
+                    std::cout << "Nepoznata opcija. Pokusajte ponovo.\n";
+                    break;
             }
-            case 2: {
-                std::string startDatum, endDatum;
-                std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
-                std::cin >> startDatum;
-                std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
-                std::cin >> endDatum;
-                izvestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
-                break;
-            }
-            case 3: {
-                int mjesec, godina;
-                std::cout << "Unesite mjesec (1-12): ";
-                std::cin >> mjesec;
-                std::cout << "Unesite godinu (YYYY): ";
-                std::cin >> godina;
-                izvestaj.generisiMjesecniIzvjestaj(mjesec, godina);
-                break;
-            }
-            case 4:
-                std::cout << "Izlaz...\n";
-                break;
-            default:
-                std::cout << "Nepoznata opcija. Pokusajte ponovo.\n";
-                break;
-        }
-    } while (opcija != 4);
-}
+        } while (opcija != 4);
+    }
 
     void izdavanjeMjesecneKarte(MjesecnaKartica& mjesecna)
     {
@@ -109,7 +110,109 @@ public:
         std::cout << "Uspjesno izdata invalidska kartica.\n" << "Ime: " << invalidska.getIme() << "\n"
                   << "Prezime: " << invalidska.getPrezime() << "\n" << "Datum Izdaje: " << invalidska.getDatumIzdaje() << std::endl;
     }
-    void upravljanjeNalozimaOpcije(const char *fajl);
-    void prijava(const char *fajl);
-    void prikaziMogucnostiUprave();
+    void upravljanjeNalozimaOpcije(const char *fajl)
+    {
+        upravljanjeNalozima.prikaziMeni(fajl);
+    }
+    // void prijava(const char *fajl)
+    // {
+    //     char tipKorisnika[20];
+    //     char korisnickoIme[50];
+    //     char sifra[50];
+
+    //     while (true)
+    //     {
+    //         std::cout << "Unesite status: ";
+    //         std::cin >> tipKorisnika;
+
+    //         std::cout << "Unesite korisnicko ime: ";
+    //         std::cin >> korisnickoIme;
+
+    //         Nalog nalog;
+    //         nalog.unesiLozinku(sifra, sizeof(sifra));
+
+    //         if (nalog.login(korisnickoIme, sifra, tipKorisnika, fajl))
+    //         {
+    //             std::cout << "Prijava uspjesna! Dobrodosli, " << korisnickoIme << " (" << nalog.getStatus() << ").\n";
+
+    //             if (std::strcmp(nalog.getStatus(), "operater") == 0)
+    //             {
+    //                 Operater operater;
+    //                 operater.prikaziMogucnostiOperatera();
+    //             }
+    //             else if (std::strcmp(nalog.getStatus(), "uprava") == 0)
+    //             {
+    //                 prikaziMogucnostiUprave();
+    //             }
+
+    //             break;
+    //         }
+    //         else
+    //         {
+    //             std::cout << "Pogresno korisnicko ime ili sifra. Pokusajte ponovo.\n";
+    //         }
+    //     }
+    // }
+
+    int prikaziMogucnostiUprave()
+    {
+        int izbor;
+        const char *fajl = "../files/korisnici.txt";
+        do
+        {
+            printf("\n1. Definisanje cjenovnika\n");
+            printf("2. Dobijanje izvestaja o radu parkinga\n");
+            printf("3. Izdavanje mjesecne karte\n");
+            printf("4. Izdavanje invalidske karte\n");
+            printf("5. Upravljanje nalozima\n");
+            printf("6. Odjava\n");
+            printf("7. Izlazak iz programa\n");
+
+            printf("Izaberite opciju: ");
+            scanf("%d", &izbor);
+
+            switch (izbor)
+            {
+            case 1: {
+                CjenovnikParkinga cenovnik;
+                definisanjeCjenovnika(cenovnik);
+                break;
+            }    
+            case 2: {
+                Izvjestaj izvestaj;
+                izvjestajORadu(izvestaj);
+                break;
+            }  
+            case 3: {
+                MjesecnaKartica mk;
+                izdavanjeMjesecneKarte(mk);
+                break;
+            }
+            case 4: {
+                InvalidskaKartica ik;
+                izdavanjeInvalidskeKarte(ik);
+                break;
+            }
+            case 5:
+                upravljanjeNalozimaOpcije(fajl);
+                break;
+            case 6:
+                char confirm;
+                printf("Da li ste sigurni da želite da se odjavite? (y/n): ");
+                scanf(" %c", &confirm);
+                if (confirm == 'y' || confirm == 'Y')
+                {
+                    printf("Odjava uspješna. Ponovno prijavljivanje.\n");
+                    izbor = 0;
+                }
+                break;
+            case 7:
+                return 0;
+            default:
+                printf("Nepostojeca opcija!\n");
+                break;
+            }
+        } while (izbor != 0);
+        return 1;
+    }
 };

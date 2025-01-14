@@ -7,6 +7,47 @@
 #include "Izlaz.h"
 #include "PodnosenjeZalbi.h"
 
+void park(int spot, const std::string& registracija)
+{
+    std::string p = "../files/parking.txt";
+    std::string temp = "../files/tempParking.txt";
+    std::ifstream inFile(p);
+    std::ofstream outFile(temp);
+
+    if (!inFile || !outFile) {
+        std::cerr << "Greska prilikom otvaranja fajlova.\n";
+        return;
+    }
+
+    std::string line;
+    std::string targetLine = "Mjesto " + std::to_string(spot) + " : slobodno";
+    std::string updatedLine = "Mjesto " + std::to_string(spot) + " : zauzeto (registracija: " + registracija + ")";
+
+
+    while (std::getline(inFile, line))
+    {
+        
+        if (line == targetLine)
+        {
+            outFile << updatedLine << std::endl;
+        }
+        else
+        {
+            
+            outFile << line << std::endl;
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    if (remove(p.c_str()) != 0 || rename("../files/tempParking.txt", p.c_str()) != 0)
+    {
+        std::cerr << "Greška prilikom ažuriranja fajla.\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main()
 {
     Parking parking(50, "ZONA1");
@@ -16,7 +57,7 @@ int main()
 
     while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
     {
-        parking.prikazSlobodnih();
+        std::cout << "Slobodnih mjesta je: " << parking.getSlobodnaMjesta() << std::endl;
         std::cout << "Da li ulazite ili izlazite sa parkinga?\n1. Ulazak\n2. Izlazak\nIzbor: ";
         std::cin >> izbor;
 
@@ -31,6 +72,7 @@ int main()
                 slobodnoMjesto = rand() % parking.getSlobodnaMjesta();
             }
             kartica.pisiKarticu(slobodnoMjesto);
+            park(slobodnoMjesto, kartica.getTablica());
         }
         else if (izbor == "2")
         {

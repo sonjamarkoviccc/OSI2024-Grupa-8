@@ -59,20 +59,20 @@ public:
 
     void prikazSlobodnih() const
     {
-        std::cout << "Slobodnih mjesta: " << slobodnaMjesta << std::endl;
+        std::ifstream inFile("../files/parking.txt");
 
-        // for (int i = 0; i < ukupnoMjesta; i++)
-        // {
-        //     if (parkingMjesta[i] == nullptr)
-        //     {
-        //         std::cout << "Mjesto " << i << " : slobodno" << std::endl;
-        //     }
-        //     else
-        //     {
-        //         std::cout << "Mjesto " << i << ": Zauzeto (Registracija: " << parkingMjesta[i]->getRegistracija()
-        //                   << ")" << std::endl;
-        //     }
-        // }
+        if (!inFile) {
+            std::cerr << "Greska prilikom otvaranja fajla.\n";
+            return;
+        }
+
+        std::string line;
+
+        while (std::getline(inFile, line)) {
+            std::cout << line << std::endl;
+        }
+
+        inFile.close();
     }
 
     std::string getZona() const { return parkingZona; }

@@ -18,6 +18,48 @@ class Izlaz
 {
 private:
     string imeFajla;
+    void izlazakSaMjesta(const std::string& registracija, int spot)
+    {
+        std::string p = "../files/parking.txt";
+        std::string temp = "../files/tempParking.txt";
+        std::ifstream inFile(p);
+        std::ofstream outFile(temp);
+
+        if (!inFile || !outFile) {
+            std::cerr << "Greska prilikom otvaranja fajlova.\n";
+            return;
+        }
+
+        std::string line;
+        std::string updatedLine;
+        bool found = false;
+
+        while (std::getline(inFile, line))
+        {
+            size_t pos = line.find("Mjesto " + std::to_string(spot) + " : zauzeto (registracija: " + registracija + ")");
+            
+            if (pos != std::string::npos) {
+                updatedLine = "Mjesto " + std::to_string(spot) + " : slobodno";
+                outFile << updatedLine << std::endl;
+                found = true;
+            } else {
+                outFile << line << std::endl;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Nije pronadjen automobil sa registracijom: " << registracija << "\n";
+        }
+
+        inFile.close();
+        outFile.close();
+
+        if (remove(p.c_str()) != 0 || rename("../files/tempParking.txt", p.c_str()) != 0)
+        {
+            std::cerr << "Greška prilikom ažuriranja fajla.\n";
+            exit(EXIT_FAILURE);
+        }
+    }
 
 public:
     // Konstruktor za inicijalizaciju fajla
@@ -29,7 +71,7 @@ public:
         ifstream fajl(imeFajla);
         if (!fajl.is_open())
         {
-            cerr << "Greska: Ne mogu da otvorim fajl " << imeFajla << endl;
+            cerr << "Greska: Problem sa otvaranjem fajla. " << imeFajla << endl;
             return;
         }
 
@@ -44,7 +86,7 @@ public:
 
             if (ime == imeTablice)
             {
-                cout << "Pronadjena linija: " << linija << endl;
+                cout << "Kartica uspjesno ucitana: " << linija << endl;
 
                 // Calculate parking fee
                 auto sada = chrono::system_clock::now();
@@ -78,9 +120,9 @@ public:
 
                     if (placeno)
                     {
-                        std::cout << "Da li ste spremni da izadjete? (Da/Ne): ";
                         while (izlaz.empty() || izlaz != "Da")
                         {
+                            std::cout << "Da li ste spremni da izadjete? (Da/Ne): ";
                             std::cin >> izlaz;
                         }
                         izlazakMoguc = provjeriIzlazak(vrijemePlacanja);
@@ -92,6 +134,7 @@ public:
                     if (izlazakMoguc)
                     {
                         parking.isparkiraj(mjesto, imeTablice);
+                        izlazakSaMjesta(imeTablice, mjesto);
                     }
                     else
                     {
@@ -170,10 +213,10 @@ public:
             // Provjera zone i tipa dana
             if (zonaCjenovnik == zona && tipDanaCjenovnik == tipDana)
             {
-                int sati;
+                int min;
                 try
                 {
-                    sati = stoi(trajanje.substr(0, trajanje.find('h')));
+                    min = stoi(trajanje.substr(0, trajanje.find('m')));
                 }
                 catch (const invalid_argument &e)
                 {
@@ -181,7 +224,7 @@ public:
                     continue;
                 }
 
-                int trajanjeSekunde = sati * 3600;
+                int trajanjeSekunde = min * 60;
 
                 if (vrijemeProvedenoSekunde <= trajanjeSekunde)
                 {
@@ -190,7 +233,7 @@ public:
                 }
 
                 // Ako je trajanje 1h, zapamti cijenu za vise od 3h
-                if (sati == 1)
+                if (min == 1)
                 {
                     cijenaZaJedanSat = cijena;
                 }
@@ -200,10 +243,10 @@ public:
         cjenovnik.close();
 
         // Ako je vrijeme vece od 3 sata, racunamo kao broj sati * cijena za 1h
-        if (vrijemeProvedenoSekunde > 3 * 3600 && cijenaZaJedanSat > 0)
+        if (vrijemeProvedenoSekunde > 3 * 60 && cijenaZaJedanSat > 0)
         {
-            int brojSati = (vrijemeProvedenoSekunde + 3599) / 3600; // Zaokruzi na sledeci sat
-            return brojSati * cijenaZaJedanSat;
+            int brojMin = (vrijemeProvedenoSekunde + 59) / 60; // Zaokruzi na sledeci sat
+            return brojMin * cijenaZaJedanSat;
         }
 
         return -1; 
@@ -265,7 +308,7 @@ public:
 }
 static void izborPlacanja(double cijena, bool& placeno)
 {
-    cout << "Odaberite nacin placanja:\n1. Bankarska kartica\n2. Gotovina\n3. Mjesecna karta\n4. Invalidska kartica" << endl;
+    cout << "Odaberite nacin placanja:\n1. Bankarska kartica\n2. Gotovina\n3. Mjesecna karta\n4. Invalidska kartica\nIzbor: ";
     int izbor;
     cin >> izbor;
 
