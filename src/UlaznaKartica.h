@@ -10,15 +10,35 @@ private:
     std::string pocetnoVrijeme;
     std::string zona;
     std::string dan;
+    int parkingMjesto;
 
 public:
-    UlaznaKartica() = default;
+    UlaznaKartica() : parkingMjesto(-1) {};
     ~UlaznaKartica() = default;
 
     void setKartica(const Parking& p)
     {
-        std::cout << "Unesite tablicu: ";
-        std::cin >> tablica;
+        while (tablica.empty())
+        {
+            std::cout << "Unesite tablicu: ";
+            std::cin >> tablica;
+
+            bool valid = true;
+            for (char ch : tablica)
+            {
+                if (!(isdigit(ch) || isalpha(ch) || ch == '-'))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid)
+            {
+                std::cout << "Tablica moze sadrzavati samo slova, brojeve ili '-'! Pokusajte ponovno.\n";
+                tablica.clear();
+            }
+        }
 
         time_t vrijeme = time(nullptr);
         struct tm datetime = *localtime(&vrijeme);
@@ -31,13 +51,17 @@ public:
         char d[5];
         strftime(d, sizeof(d), "%a", &datetime);
         dan = d;
+    }
 
+    void pisiKarticu(int mjesto)
+    {
+        parkingMjesto = mjesto;
         std::ofstream spisakTablica("../files/tablice.txt", std::ios::app);
         if (!spisakTablica) {
             std::cerr << "Greska pri otvaranju datoteke." << std::endl;
             return;
         }
-        spisakTablica << tablica << " " << zona << " " << dan << " " << pocetnoVrijeme << "\n";
+        spisakTablica << tablica << " " << zona << " " << dan << " " << pocetnoVrijeme << " " << parkingMjesto << "\n";
     }
 
     std::string getTablica() const { return tablica; }

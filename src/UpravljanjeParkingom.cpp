@@ -30,11 +30,21 @@ int main()
 
             if (strcmp(nalog.getStatus(), "uprava") == 0 || strcmp(nalog.getStatus(), "admin") == 0)
             {
-                uprava.prikaziMogucnostiUprave();
+                if (!uprava.prikaziMogucnostiUprave())
+                {
+                    printf("Gasenje programa...\n");
+                    system("pause");
+                    return 0;
+                }
             }
             else if (strcmp(nalog.getStatus(), "operater") == 0)
             {
-                operater.prikaziMogucnostiOperatera();
+                if (!operater.prikaziMogucnostiOperatera())
+                {
+                    printf("Gasenje programa...\n");
+                    system("pause");
+                    return 0;
+                }
             }
             else
             {
