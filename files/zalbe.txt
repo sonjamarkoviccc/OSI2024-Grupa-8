@@ -1,1 +1,2 @@
 1|neka zalba|rijesena|neki odgovor
+2 | premalo vremena dozvoljeno da se izadje sa parkinga nakon placanja | aktivna |

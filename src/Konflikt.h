@@ -27,7 +27,6 @@ public:
         ucitajZalbe();
     }
 
-    // Funkcija za ucitavanje zalbi sa fajla
     void ucitajZalbe()
     {
         std::ifstream file(fajlZalbi);
@@ -52,7 +51,6 @@ public:
         file.close();
     }
 
-    // Funkcija za cuvanje zalbi u fajl
     void sacuvajZalbe() const
     {
         std::ofstream file(fajlZalbi);
@@ -69,7 +67,6 @@ public:
         file.close();
     }
 
-    // Funkcija za prikaz zalbi
     void prikaziZalbe() const
     {
         printf("%-5s | %-60s | %-12s | %s\n", "ID", "Tekst", "Status", "Odgovor");
@@ -85,7 +82,6 @@ public:
         }
     }
 
-    // Funkcija za rešavanje žalbi
     void rijesiZalbu(int id)
     {
         for (auto &zalba : zalbe)
@@ -95,7 +91,7 @@ public:
                 if (zalba.status == "aktivna")
                 {
                     printf("Unesite odgovor na zalbu: ");
-                    std::getline(std::cin, zalba.odgovor); // Uzmite odgovor sa std::getline
+                    std::getline(std::cin, zalba.odgovor);
                     zalba.status = "rijesena";
                     printf("Zalba uspjesno rijesena!\n");
                 }
@@ -109,7 +105,6 @@ public:
         printf("Greska: Zalba sa ID %d ne postoji.\n", id);
     }
 
-    // Funkcija za rešavanje konflikta
     void rjesavanjeKonflikta()
     {
         int brojZalbe;

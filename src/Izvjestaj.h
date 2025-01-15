@@ -5,83 +5,23 @@
 #include <sstream>
 
 const int MAX_KORISNIKA = 100;
-const int MAX_ZONA = 10; // maksimalan broj zona
-const int MAX_TIP = 2;   // RADNI ili VIKEND
-const int MAX_VREMENSKISLOT = 2; // 1 ili 24 sata
+const int MAX_ZONA = 10;
+const int MAX_TIP = 2;
+const int MAX_VREMENSKISLOT = 2;
 
 
 class Izvjestaj {
-private:
-struct Korisnik {
-    std::string registarskaTablica;                   
-    std::string datum;
-    std::string vrijeme;                          
-    int trajanje;
-    double iznos;                
-};
-
-// struct Cjenovnik {
-//     std::string zona;   
-//     std::string tip;    
-//     int trajanje;       
-//     double cijena;     
-// };
+    private:
+        struct Korisnik {
+            std::string registarskaTablica;                   
+            std::string datum;
+            std::string vrijeme;                          
+            int trajanje;
+            double iznos;                
+        };
 
     Korisnik korisnici[MAX_KORISNIKA];
     int brojKorisnika;
-    // Cjenovnik cjenovnik[MAX_ZONA * MAX_TIP * MAX_VREMENSKISLOT];  
-
-    // void ucitajCjenovnik() {
-    //     std::ifstream ulazCjenovnik("../files/cjenovnik.txt");
-    //     if (!ulazCjenovnik) {
-    //         std::cerr << "Greska prilikom otvaranja fajla cjenovnik.txt.\n";
-    //         return;
-    //     }
-
-    //     std::string zona, tip, vrijeme;
-    //     double cijena;
-    //     int index = 0;
-    //     while (ulazCjenovnik >> zona >> tip >> vrijeme >> cijena) {
-    //         int trajanje = timeToMinutes(vrijeme);  // konvertovanje h:m:s u minute
-    //         cjenovnik[index++] = {zona, tip, trajanje, cijena};
-    //     }
-    //     ulazCjenovnik.close();
-    // }
-
-    // bool isWeekend(const std::string& dayType) {
-    //     return dayType == "Sat" || dayType == "Sun";
-    // }
-
-    // int timeToMinutes(const std::string& timeStr) {
-    //     int hours, minutes, seconds;
-    //     char colon;
-    //     std::istringstream ss(timeStr);
-    //     ss >> hours >> colon >> minutes >> colon >> seconds;
-
-    //     return hours * 60 + minutes;  
-    // }
-
-    // double calculatePrice(const std::string& zona, bool isWeekend, int trajanje) {
-    //     std::string vrijeme = isWeekend ? "VIKEND" : "RADNI";
-    //     double price = 0.0;
-
-    //     for (int i = 0; i < MAX_ZONA * MAX_TIP * MAX_VREMENSKISLOT; ++i) {
-    //         if (cjenovnik[i].zona == zona && cjenovnik[i].tip == vrijeme) {
-    //             if ((trajanje < 60 && cjenovnik[i].trajanje == 60) || (trajanje >= 60 && cjenovnik[i].trajanje == 1440)) {
-    //                 price = cjenovnik[i].cijena;
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     if (price == 0.0) {
-    //         std::cerr << "Cijena nije pronadjena u zoni " << zona << " za trajanje " << trajanje << " minuta.\n";
-    //     } else {
-    //         std::cout << "Cijena za zonu " << zona << " za " << trajanje << " minuta: " << price << " KM\n";
-    //     }
-
-    //     return price;
-    // }
 
     void ucitajKorisnike() {
         std::ifstream ulazTablice("../files/podaci.txt");
@@ -99,7 +39,7 @@ struct Korisnik {
             double iznos;
 
             if (!(iss >> tablica >> datum >> vr >> duration >> iznos)) {
-                std::cerr << "Greska prilikom parsiranja linije: " << linija << "\n";
+                std::cerr << "Greska prilikom ucitavanja podataka: " << linija << "\n";
                 continue;
             }
 

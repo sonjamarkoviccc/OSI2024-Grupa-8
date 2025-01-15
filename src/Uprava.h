@@ -29,7 +29,7 @@ public:
                 std::string zona, dan, vrijeme, cijena;
                 std::cout << "Unesite zonu: ";
                 std::getline(std::cin, zona);
-                std::cout << "Unesite dan (radni, vikend, praznik): ";
+                std::cout << "Unesite dan (radni, vikend): ";
                 std::getline(std::cin, dan);
                 std::cout << "Unesite vrijeme (u formatu HH:MM:SS): ";
                 std::getline(std::cin, vrijeme);  
@@ -42,7 +42,7 @@ public:
                 std::string zona, dan, vrijeme;
                 std::cout << "Unesite zonu: ";
                 std::getline(std::cin, zona);
-                std::cout << "Unesite dan (radni, vikend, praznik): ";
+                std::cout << "Unesite dan (radni, vikend): ";
                 std::getline(std::cin, dan);
                 std::cout << "Unesite vrijeme (u formatu HH:MM:SS): ";
                 std::getline(std::cin, vrijeme);
@@ -114,45 +114,6 @@ public:
     {
         upravljanjeNalozima.prikaziMeni(fajl);
     }
-    // void prijava(const char *fajl)
-    // {
-    //     char tipKorisnika[20];
-    //     char korisnickoIme[50];
-    //     char sifra[50];
-
-    //     while (true)
-    //     {
-    //         std::cout << "Unesite status: ";
-    //         std::cin >> tipKorisnika;
-
-    //         std::cout << "Unesite korisnicko ime: ";
-    //         std::cin >> korisnickoIme;
-
-    //         Nalog nalog;
-    //         nalog.unesiLozinku(sifra, sizeof(sifra));
-
-    //         if (nalog.login(korisnickoIme, sifra, tipKorisnika, fajl))
-    //         {
-    //             std::cout << "Prijava uspjesna! Dobrodosli, " << korisnickoIme << " (" << nalog.getStatus() << ").\n";
-
-    //             if (std::strcmp(nalog.getStatus(), "operater") == 0)
-    //             {
-    //                 Operater operater;
-    //                 operater.prikaziMogucnostiOperatera();
-    //             }
-    //             else if (std::strcmp(nalog.getStatus(), "uprava") == 0)
-    //             {
-    //                 prikaziMogucnostiUprave();
-    //             }
-
-    //             break;
-    //         }
-    //         else
-    //         {
-    //             std::cout << "Pogresno korisnicko ime ili sifra. Pokusajte ponovo.\n";
-    //         }
-    //     }
-    // }
 
     int prikaziMogucnostiUprave()
     {
@@ -198,11 +159,11 @@ public:
                 break;
             case 6:
                 char confirm;
-                printf("Da li ste sigurni da želite da se odjavite? (y/n): ");
+                printf("Da li ste sigurni da zelite da se odjavite? (y/n): ");
                 scanf(" %c", &confirm);
                 if (confirm == 'y' || confirm == 'Y')
                 {
-                    printf("Odjava uspješna. Ponovno prijavljivanje.\n");
+                    printf("Odjava uspjesna. Ponovno prijavljivanje.\n");
                     izbor = 0;
                 }
                 break;

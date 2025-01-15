@@ -56,7 +56,7 @@ private:
 
         if (remove(p.c_str()) != 0 || rename("../files/tempParking.txt", p.c_str()) != 0)
         {
-            std::cerr << "Greška prilikom ažuriranja fajla.\n";
+            std::cerr << "Greska prilikom azuriranja fajla.\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -102,7 +102,7 @@ private:
         if (updated) {
             if (remove(filename.c_str()) != 0 || rename("../files/tempPodaci.txt", filename.c_str()) != 0)
             {
-                std::cerr << "Greška prilikom ažuriranja fajla.\n";
+                std::cerr << "Greska prilikom azuriranja fajla.\n";
                 exit(EXIT_FAILURE);
             }
         } else {
@@ -112,10 +112,8 @@ private:
     }
 
 public:
-    // Konstruktor za inicijalizaciju fajla
     Izlaz(const string &fajl) : imeFajla(fajl) {}
 
-    // Metod za pretragu po imenu tablice
     void pretraziTablicu(const string &imeTablice, Parking &parking)
     {
         ifstream fajl(imeFajla);
@@ -283,7 +281,6 @@ public:
                     return cijena;
                 }
 
-                // Ako je trajanje 1h, zapamti cijenu za vise od 3h
                 if (min == 1)
                 {
                     cijenaZaJedanSat = cijena;
@@ -293,188 +290,176 @@ public:
 
         cjenovnik.close();
 
-        // Ako je vrijeme vece od 3 sata, racunamo kao broj sati * cijena za 1h
         if (vrijemeProvedenoSekunde > 3 * 60 && cijenaZaJedanSat > 0)
         {
-            int brojMin = (vrijemeProvedenoSekunde + 59) / 60; // Zaokruzi na sledeci sat
+            int brojMin = (vrijemeProvedenoSekunde + 59) / 60;
             return brojMin * cijenaZaJedanSat;
         }
 
         return -1; 
     }
-    // Funkcija za proveru izlaska sa parkinga
+
     static bool provjeriIzlazak(const time_t &vrijemePlacanja)
     {
-        
-        // Trenutno vrijeme
         auto sada = chrono::system_clock::now();
         time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
 
-        // Razlika u sekundama između trenutnog vremena i vremena plaćanja
         int protekloVrijemeSekunde = difftime(trenutnoVrijeme, vrijemePlacanja);
 
         if (protekloVrijemeSekunde <= 30)
         {
-            cout << "Izlazak sa parkinga dozvoljen. Rampa se diže." << endl;
-            // izlazak sa parkinga
+            cout << "Izlazak sa parkinga dozvoljen. Rampa se dize." << endl;
             return true;
         }
         else
         {
-            cout << "Izlazak nije moguć. Ponovno izvršite plaćanje." << endl;
+            cout << "Izlazak nije moguc. Ponovno izvrsite placanje." << endl;
             return false;
         }
     }
 
+   static void generisiRacun(const string& izborPlacanja, double cijena)
+   {
+        auto sada = chrono::system_clock::now();
+        time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
+        tm *trenutnoVrijemeTm = localtime(&trenutnoVrijeme);
 
+        ofstream racunFile("../files/racun.txt");
+        if (!racunFile) {
+            cerr << "Greska prilikom otvaranja fajla za upis racuna.\n";
+            return;
+        }
+
+        stringstream racunContent;
+        racunContent << "Racun za placanje parkinga\n";
+        racunContent << "--------------------------------\n";
+        racunContent << "Datum i vrijeme: " << put_time(trenutnoVrijemeTm, "%d-%m-%Y %H:%M:%S") << "\n";
+        racunContent << "Nacin naplate: " << izborPlacanja << "\n";
+        racunContent << "Cijena parkinga: " << fixed << setprecision(2) << cijena << " KM\n";
+        racunContent << "Hvala Vam na posjeti!\n";
+
+        cout << racunContent.str() << endl;
+
+        racunFile << racunContent.str();
+        racunFile.close();
+    }
     
-    // Metod za generisanje računa
-   static void generisiRacun(const string& izborPlacanja, double cijena) {
-    // Dobavljanje trenutnog vremena
-    auto sada = chrono::system_clock::now();
-    time_t trenutnoVrijeme = chrono::system_clock::to_time_t(sada);
-    tm *trenutnoVrijemeTm = localtime(&trenutnoVrijeme);
-
-    // Otvorite fajl za upis računa
-    ofstream racunFile("../files/racun.txt");
-    if (!racunFile) {
-        cerr << "Greska prilikom otvaranja fajla za upis računa.\n";
-        return;
-    }
-
-    // Formatirajte datum i vreme
-    stringstream racunContent;
-    racunContent << "Račun za plaćanje parkinga\n";
-    racunContent << "--------------------------------\n";
-    racunContent << "Datum i vrijeme: " << put_time(trenutnoVrijemeTm, "%d-%m-%Y %H:%M:%S") << "\n";
-    racunContent << "Nacin naplate: " << izborPlacanja << "\n";
-    racunContent << "Cijena parkinga: " << fixed << setprecision(2) << cijena << " KM\n";
-    racunContent << "Hvala Vam na posjeti!\n";
-
-    cout << racunContent.str() << endl;
-
-    // Upisivanje računa u fajl
-    racunFile << racunContent.str();
-    racunFile.close();
-}
-static void izborPlacanja(double cijena, bool& placeno)
-{
-    cout << "Odaberite nacin placanja:\n1. Bankarska kartica\n2. Gotovina\n3. Mjesecna karta\n4. Invalidska kartica\nIzbor: ";
-    int izbor;
-    cin >> izbor;
-
-    switch (izbor)
+    static void izborPlacanja(double cijena, bool& placeno)
     {
-    case 1:
-    {
-        cout << "Unesite ID kartice: ";
-        string idKartice;
-        cin >> idKartice;
+        cout << "Odaberite nacin placanja:\n1. Bankarska kartica\n2. Gotovina\n3. Mjesecna karta\n4. Invalidska kartica\nIzbor: ";
+        int izbor;
+        cin >> izbor;
 
-        BankarskaKartica kartica;
-
-        if (!kartica.imaRacun(idKartice))
+        switch (izbor)
         {
-            cout << "Kartica nije registrovana u banci." << endl;
-            placeno = false;
-            return;
-        }
-
-        if (!kartica.jeValidna())
+        case 1:
         {
-            cout << "Kartica nije validna." << endl;
-            placeno = false;
-            return;
-        }
+            cout << "Unesite ID kartice: ";
+            string idKartice;
+            cin >> idKartice;
 
-        placeno = kartica.placanje(cijena);
-        generisiRacun("Bankarska kartica", cijena);
+            BankarskaKartica kartica;
 
-        break;
-    }
-    case 2:
-    {
-        double uplaceniIznos;
-        double preostaliIznos = cijena;
-
-        do
-        {
-            cout << "Unesite iznos koji ste ubacili: ";
-            cin >> uplaceniIznos;
-
-            if (uplaceniIznos < preostaliIznos)
+            if (!kartica.imaRacun(idKartice))
             {
-                preostaliIznos -= uplaceniIznos;
-                cout << "Nedovoljno novca. Potrebno je jos " << fixed << setprecision(2) << preostaliIznos << " KM." << endl;
-            }
-            else
-            {
-                cout << "Placanje uspjesno. Kusur: " << fixed << setprecision(2) << uplaceniIznos - preostaliIznos << " KM." << endl;
-                preostaliIznos = 0;
-                generisiRacun("Gotovina", cijena);
+                cout << "Kartica nije registrovana u banci." << endl;
+                placeno = false;
+                return;
             }
 
-        } while (preostaliIznos > 0);
-        placeno = true;
-        break;
-    }
-    case 3:
-    {
-        MjesecnaKartica mKarta;
-        std::string uIme, uPrezime;
+            if (!kartica.jeValidna())
+            {
+                cout << "Kartica nije validna." << endl;
+                placeno = false;
+                return;
+            }
 
-        std::cout << "Unesite ime: ";
-        std::cin >> uIme;
-        std::cout << "Unesite prezime: ";
-        std::cin >> uPrezime;
+            placeno = kartica.placanje(cijena);
+            if (placeno)
+            {
+                generisiRacun("Bankarska kartica", cijena);
+            }
 
-        mKarta.getKartica(uIme, uPrezime);
-        if (!mKarta.jeValidna())
-        {
-            cout << "Karta nije validna. Izaberite drugi nacin placanja" << endl;
-            placeno = false;
-            return;
+            break;
         }
-        if (mKarta.jeValidna())
+        case 2:
         {
-            cout << "Placanje uspjesno." << endl;
+            double uplaceniIznos;
+            double preostaliIznos = cijena;
+
+            do
+            {
+                cout << "Unesite iznos koji ste ubacili: ";
+                cin >> uplaceniIznos;
+
+                if (uplaceniIznos < preostaliIznos)
+                {
+                    preostaliIznos -= uplaceniIznos;
+                    cout << "Nedovoljno novca. Potrebno je jos " << fixed << setprecision(2) << preostaliIznos << " KM." << endl;
+                }
+                else
+                {
+                    cout << "Placanje uspjesno. Kusur: " << fixed << setprecision(2) << uplaceniIznos - preostaliIznos << " KM." << endl;
+                    preostaliIznos = 0;
+                    generisiRacun("Gotovina", cijena);
+                }
+
+            } while (preostaliIznos > 0);
             placeno = true;
-            generisiRacun("Mjesecna kartica", cijena);
+            break;
         }
-        break;
-    }
-    case 4:
-    {
-        InvalidskaKartica iKarta;
-        std::string uIme, uPrezime;
-
-        std::cout << "Unesite ime: ";
-        std::cin >> uIme;
-        std::cout << "Unesite prezime: ";
-        std::cin >> uPrezime;
-        bool imaKarte = iKarta.getKartica(uIme, uPrezime);
-        if (!imaKarte)
+        case 3:
         {
-            cout << "Karta nije validna. Izaberite drugi nacin placanja." << endl;
+            MjesecnaKartica mKarta;
+            std::string uIme, uPrezime;
+
+            std::cout << "Unesite ime: ";
+            std::cin >> uIme;
+            std::cout << "Unesite prezime: ";
+            std::cin >> uPrezime;
+
+            mKarta.getKartica(uIme, uPrezime);
+            if (!mKarta.jeValidna())
+            {
+                cout << "Karta nije validna. Izaberite drugi nacin placanja" << endl;
+                placeno = false;
+                return;
+            }
+            if (mKarta.jeValidna())
+            {
+                cout << "Placanje uspjesno." << endl;
+                placeno = true;
+                generisiRacun("Mjesecna kartica", cijena);
+            }
+            break;
+        }
+        case 4:
+        {
+            InvalidskaKartica iKarta;
+            std::string uIme, uPrezime;
+
+            std::cout << "Unesite ime: ";
+            std::cin >> uIme;
+            std::cout << "Unesite prezime: ";
+            std::cin >> uPrezime;
+            bool imaKarte = iKarta.getKartica(uIme, uPrezime);
+            if (!imaKarte)
+            {
+                cout << "Karta nije validna. Izaberite drugi nacin placanja." << endl;
+                placeno = false;
+                return;
+            }
+            if (imaKarte)
+            {
+                cout << "Placanje uspjesno." << endl;
+                placeno = true;
+                generisiRacun("Invalidska kartica", cijena);
+            }
+            break;
+        }
+        default:
+            cout << "Nepoznata opcija." << endl;
             placeno = false;
-            return;
         }
-        if (imaKarte)
-        {
-            cout << "Placanje uspjesno." << endl;
-            placeno = true;
-            generisiRacun("Invalidska kartica", cijena);
-        }
-        break;
-    }
-    default:
-        cout << "Nepoznata opcija." << endl;
-        placeno = false;
-    }
-}
-
-
-
-    
-        
+    }     
 };

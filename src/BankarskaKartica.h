@@ -44,7 +44,7 @@ class BankarskaKartica
                 std::ifstream file("../files/Banka1.txt");
                 if (!file)
                 {
-                    std::cerr << "Greška prilikom otvaranja fajla.\n";
+                    std::cerr << "Greska prilikom otvaranja fajla.\n";
                     exit(EXIT_FAILURE);
                 }
 
@@ -60,7 +60,7 @@ class BankarskaKartica
                 std::ifstream file("../files/Banka2.txt");
                 if (!file)
                 {
-                    std::cerr << "Greška prilikom otvaranja fajla.\n";
+                    std::cerr << "Greska prilikom otvaranja fajla.\n";
                     exit(EXIT_FAILURE);
                 }
 
@@ -84,7 +84,7 @@ class BankarskaKartica
                 std::ifstream inputFile(fileName);
                 if (!inputFile)
                 {
-                    std::cerr << "Greška prilikom otvaranja fajla za čitanje.\n";
+                    std::cerr << "Greska prilikom otvaranja fajla za citanje.\n";
                     return false;
                     exit(EXIT_FAILURE);
                 }
@@ -92,7 +92,7 @@ class BankarskaKartica
                 std::ofstream tempFile("../files/temp.txt");
                 if (!tempFile)
                 {
-                    std::cerr << "Greška prilikom otvaranja fajla za pisanje.\n";
+                    std::cerr << "Greska prilikom otvaranja fajla za pisanje.\n";
                     return false;
                     exit(EXIT_FAILURE);
                 }
@@ -113,7 +113,7 @@ class BankarskaKartica
 
                 if (remove(fileName.c_str()) != 0 || rename("../files/temp.txt", fileName.c_str()) != 0)
                 {
-                    std::cerr << "Greška prilikom ažuriranja fajla.\n";
+                    std::cerr << "Greska prilikom azuriranja fajla.\n";
                     return false;
                     exit(EXIT_FAILURE);
                 }

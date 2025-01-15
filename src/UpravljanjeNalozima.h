@@ -31,7 +31,6 @@ public:
             return;
         }
 
-        file << std::endl;
         file << nalog.getKorisnickoIme() << " " << nalog.getSifra() << " " << nalog.getStatus() << std::endl;
         file.close();
         std::cout << "Nalog uspesno dodat!" << std::endl;

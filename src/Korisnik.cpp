@@ -43,7 +43,7 @@ void park(int spot, const std::string& registracija)
 
     if (remove(p.c_str()) != 0 || rename("../files/tempParking.txt", p.c_str()) != 0)
     {
-        std::cerr << "Greška prilikom ažuriranja fajla.\n";
+        std::cerr << "Greska prilikom azuriranja fajla.\n";
         exit(EXIT_FAILURE);
     }
 }

@@ -19,7 +19,7 @@ private:
     void ucitajIzFajla() {
         std::ifstream ulazniFajl(ime_fajla);
         if (!ulazniFajl) {
-            std::cerr << "Greška prilikom otvaranja fajla.\n";
+            std::cerr << "Greska prilikom otvaranja fajla.\n";
             return;
         }
 
@@ -27,13 +27,13 @@ private:
             velicina++;
         }
         
-        std::cout << "Cjenovnik uspješno učitan.\n";
+        std::cout << "Cjenovnik uspjesno ucitan.\n";
     }
 
     void sacuvajUFajl() const {
         std::ofstream izlazniFajl(ime_fajla);
         if (!izlazniFajl) {
-            std::cerr << "Greška prilikom čuvanja u fajl.\n";
+            std::cerr << "Greska prilikom cuvanja u fajl.\n";
             return;
         }
 
@@ -41,7 +41,7 @@ private:
             izlazniFajl << cijene[i].zona << " " << cijene[i].dan << " " << cijene[i].vrijeme << " " << cijene[i].cijena << "\n";
         }
         
-        std::cout << "Cjenovnik uspješno sačuvan.\n";
+        std::cout << "Cjenovnik uspjesno sacuvan.\n";
     }
 
 public:
@@ -83,7 +83,7 @@ public:
     void prikaziMeni() const {
         std::cout << "\n--- Upravljanje cjenovnikom ---\n"
                   << "1. Postavi cijenu\n"
-                  << "2. Pronađi cijenu\n"
+                  << "2. Pronadji cijenu\n"
                   << "3. Izlaz\n"
                   << "Izaberite opciju: ";
     }
