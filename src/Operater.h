@@ -50,7 +50,7 @@ public:
             case 3:
             {
                 char confirm;
-                printf("Da li ste sigurni da želite da se odjavite? (y/n): ");
+                printf("Da li ste sigurni da zelite da se odjavite? (y/n): ");
                 scanf(" %c", &confirm);
                 if (confirm == 'y' || confirm == 'Y')
                 {
