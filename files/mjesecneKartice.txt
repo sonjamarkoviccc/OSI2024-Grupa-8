@@ -1,2 +1,8 @@
-IME             PREZIME             D.IZDAJE    D.ISTEKA
-========================================================
+Stojan Simic 100125 100225
+Dusan Petrovic 120125 120225
+Petar Pajovic 090125 090225
+Dunja Filipovic 111224 110125
+Dusko Koscica 130125 130225
+Dragan Trifunovic 130125 130225
+Lana Pajovic 140125 140225
+Boro Borovic 140125 140225

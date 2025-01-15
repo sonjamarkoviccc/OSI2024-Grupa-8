@@ -2,11 +2,12 @@
 #include <string>
 
 class Auto{
-private:
-std::string registracija;
-public:
-Auto(std::string registracija): registracija(registracija){}
+    private:
+        std::string registracija;
 
-std:: string getRegistracija()const {return registracija; };
+    
+    public:
+        Auto(std::string registracija): registracija(registracija){}
 
+        std:: string getRegistracija()const {return registracija; }
 };

@@ -1,4 +1,4 @@
-Izvjestaj za datum: 01 01 2023
-Ukupan broj korisnika: 2
-Ukupna zarada: 25.5 KM
+Dnevni izvjestaj: 15.01.2025
+Ukupan broj korisnika: 5
+Ukupna zarada: 81.5 KM
 

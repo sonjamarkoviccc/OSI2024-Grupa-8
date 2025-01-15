@@ -10,26 +10,25 @@ public:
     {
         std::string tekstZalbe;
         std::cout << "Unesite tekst zalbe: ";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::getline(std::cin, tekstZalbe);
 
         std::ofstream file("../files/zalbe.txt", std::ios::app); 
         if (!file)
         {
-            std::cerr << "Greška pri otvaranju fajla!" << std::endl;
+            std::cerr << "Greska pri otvaranju fajla!" << std::endl;
             return;
         }
 
         int poslednjiBroj = dobaviPoslednjiBroj();
 
-        // Formatiraj novu zalbu
         std::stringstream ss;
-        ss << poslednjiBroj + 1 << "|" << tekstZalbe << "|aktivna|\n";
+        ss << poslednjiBroj + 1 << " | " << tekstZalbe << " | aktivna |\n";
 
-        // Upisivanje nove zalbe u fajl
         file << ss.str();
         file.close();
 
-        std::cout << "Zalba je uspješno unijeta!" << std::endl;
+        std::cout << "Zalba je uspjesno unijeta!" << std::endl;
     }
 
 private:
@@ -57,11 +56,3 @@ private:
         return poslednjiBroj;
     }
 };
-
-/*int main()
-{
-    PodnosenjeZalbi zalba;
-    zalba.unesiZalbu();
-
-    return 0;
-}*/

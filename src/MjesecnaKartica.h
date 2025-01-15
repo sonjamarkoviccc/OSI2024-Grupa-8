@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <limits>
 
 class MjesecnaKartica {
 private:
@@ -38,7 +39,9 @@ public:
         datumIsteka = temp2.str();
 
         std::cout << "Unesite ime: ";
-        std::getline(std::cin, ime);
+        std::cin >> ime;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         std::cout << "Unesite prezime: ";
         std::getline(std::cin, prezime);
@@ -48,10 +51,7 @@ public:
             std::cerr << "Greska pri otvaranju datoteke." << std::endl;
             return;
         }
-        bazaMjesecne << std::left << std::setw(16) << ime
-                     << std::setw(20) << prezime
-                     << std::setw(12) << datumIzdaje
-                     << std::setw(12) << datumIsteka << '\n';
+        bazaMjesecne << ime << " " << prezime << " " << datumIzdaje << " " << datumIsteka << std::endl;
     }
 
     bool jeValidna() const {
@@ -70,4 +70,48 @@ public:
     std::string getPrezime() const { return prezime; }
     std::string getDatumIzdaje() const { return datumIzdaje; }
     std::string getDatumIsteka() const { return datumIsteka; }
+
+    void setIme(std::string uIme)
+    {
+        ime = uIme;
+    }
+
+    void setPrezime(std::string uPrezime)
+    {
+        prezime = uPrezime;
+    }
+
+    void setDatumIzdaje(std::string dIzdaje)
+    {
+        datumIzdaje = dIzdaje;
+    }
+
+    void setDatumIsteka(std::string dIsteka)
+    {
+        datumIsteka = dIsteka;
+    }
+
+    void getKartica(std::string& uIme, std::string& uPrezime)
+    {
+        std::ifstream mjesecne("../files/mjesecneKartice.txt");
+        if (!mjesecne) {
+            std::cerr << "Greska pri otvaranju datoteke." << std::endl;
+            return;
+        }
+
+        std::string line;
+
+        while (std::getline(mjesecne, line))
+        {
+            std::stringstream ss(line);
+
+            ss >> ime >> prezime >> datumIzdaje >> datumIsteka;
+
+            if (!ime.compare(uIme) && !prezime.compare(uPrezime))
+            {
+                break;
+            }
+        }
+
+    }
 };
