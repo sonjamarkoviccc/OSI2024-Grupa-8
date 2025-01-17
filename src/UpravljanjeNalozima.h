@@ -69,7 +69,7 @@ public:
         }
 
         std::string fileIme, fileSifra, fileStatus;
-        std::cout << "Postojeći nalozi:\n";
+        std::cout << "Postojeci nalozi:\n";
         while (file >> fileIme >> fileSifra >> fileStatus)
         {
             std::cout << "Korisnicko ime: " << fileIme << ", Tip naloga: " << fileStatus << std::endl;
