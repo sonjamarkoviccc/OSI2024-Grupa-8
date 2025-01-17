@@ -1,4 +1,3 @@
-#pragma once
 #include <cstdio>
 #include <fstream>
 #include <vector>
@@ -9,113 +8,133 @@
 
 class Konflikt
 {
-private:
-    struct Zalba
-    {
-        int id;
-        std::string tekst;
-        std::string status;
-        std::string odgovor;
-    };
+    private:
+        struct Zalba {
+            int id;
+            std::string text;
+            std::string email;
+            std::string date;
+            std::string answer;
+        };
 
-    std::vector<Zalba> zalbe;
-    std::string fajlZalbi;
-
-public:
-    Konflikt(const std::string &fajl) : fajlZalbi(fajl)
-    {
-        ucitajZalbe();
-    }
-
-    void ucitajZalbe()
-    {
-        std::ifstream file(fajlZalbi);
-        if (!file)
+        int sljedeciID(const std::vector<Zalba>& Zalbas)
         {
-            printf("Greska pri otvaranju fajla: %s\n", fajlZalbi.c_str());
-            return;
-        }
-
-        std::string linija;
-        while (std::getline(file, linija))
-        {
-            std::istringstream iss(linija);
-            Zalba zalba;
-            std::getline(iss, linija, '|');
-            zalba.id = std::stoi(linija);
-            std::getline(iss, zalba.tekst, '|');
-            std::getline(iss, zalba.status, '|');
-            std::getline(iss, zalba.odgovor);
-            zalbe.push_back(zalba);
-        }
-        file.close();
-    }
-
-    void sacuvajZalbe() const
-    {
-        std::ofstream file(fajlZalbi);
-        if (!file)
-        {
-            printf("Greska pri pisanju u fajl: %s\n", fajlZalbi.c_str());
-            return;
-        }
-
-        for (const auto &zalba : zalbe)
-        {
-            file << zalba.id << "|" << zalba.tekst << "|" << zalba.status << "|" << zalba.odgovor << "\n";
-        }
-        file.close();
-    }
-
-    void prikaziZalbe() const
-    {
-        printf("%-5s | %-60s | %-12s | %s\n", "ID", "Tekst", "Status", "Odgovor");
-        printf("%s\n", std::string(80, '-').c_str());
-
-        for (const auto &zalba : zalbe)
-        {
-            printf("%-5d | %-60s | %-12s | %s\n",
-                   zalba.id,
-                   zalba.tekst.c_str(),
-                   zalba.status.c_str(),
-                   zalba.odgovor.c_str());
-        }
-    }
-
-    void rijesiZalbu(int id)
-    {
-        for (auto &zalba : zalbe)
-        {
-            if (zalba.id == id)
-            {
-                if (zalba.status == "aktivna")
-                {
-                    printf("Unesite odgovor na zalbu: ");
-                    std::getline(std::cin, zalba.odgovor);
-                    zalba.status = "rijesena";
-                    printf("Zalba uspjesno rijesena!\n");
+            int maxID = 0;
+            for (const auto& Zalba : Zalbas) {
+                if (Zalba.id > maxID) {
+                    maxID = Zalba.id;
                 }
-                else
-                {
-                    printf("Greska: Zalba je vec rijesena.\n");
-                }
-                return;
+            }
+            return maxID + 1;
+        }
+
+        std::string danasnjiDatum()
+        {
+            std::time_t t = std::time(nullptr);
+            std::tm tm = *std::localtime(&t);
+
+            std::ostringstream oss;
+            oss << std::put_time(&tm, "%d.%m.%Y");
+            return oss.str();
+        }
+
+    public:
+        std::vector<Zalba> ucitajZalbe() {
+            std::vector<Zalba> zalbe;
+            std::ifstream file("../files/zalbe.txt");
+            std::string line;
+
+            while (std::getline(file, line)) {
+                std::istringstream iss(line);
+                Zalba Zalba;
+                std::getline(iss, line, '|');
+                Zalba.id = std::stoi(line);
+                std::getline(iss, Zalba.text, '|');
+                std::getline(iss, Zalba.email, '|');
+                std::getline(iss, Zalba.date, '|');
+                std::getline(iss, Zalba.answer);
+
+                zalbe.push_back(Zalba);
+            }
+
+            return zalbe;
+        }
+
+        void sacuvajZalbe(const std::vector<Zalba>& zalbe) {
+            std::ofstream file("../files/zalbe.txt");
+            for (const auto& Zalba : zalbe) {
+                file << Zalba.id << " | " << Zalba.text << " | "
+                    << Zalba.email << " | " << Zalba.date << " | "
+                    << Zalba.answer << "\n";
             }
         }
-        printf("Greska: Zalba sa ID %d ne postoji.\n", id);
-    }
 
-    void rjesavanjeKonflikta()
-    {
-        int brojZalbe;
+        void prikaziZalbe(const std::vector<Zalba>& zalbe) {
+            std::cout << "\nZalbe:\n";
+            std::cout << "------------------------------" << std::endl;
+            for (const auto& Zalba : zalbe) {
+                std::cout << "ID: " << Zalba.id
+                        << "\nTekst: " << Zalba.text
+                        << "\nEmail: " << Zalba.email
+                        << "\nDatum: " << Zalba.date << "\n\n";
+            }
+        }
 
-        prikaziZalbe();
+        void dodajZalbu()
+        {
+            std::vector<Zalba> zalbe = ucitajZalbe();
+            Zalba newZalba;
+            newZalba.id = sljedeciID(zalbe);
 
-        printf("Unesite broj zalbe koju zelite da rijesite: ");
-        scanf("%d", &brojZalbe);
-        std::cin.ignore();
+            std::cout << "Unesite zalbu: ";
+            std::cin.ignore();
+            std::getline(std::cin, newZalba.text);
 
-        rijesiZalbu(brojZalbe);
-        sacuvajZalbe();
-    }
+            std::cout << "Unesite email: ";
+            std::getline(std::cin, newZalba.email);
+
+            newZalba.date = danasnjiDatum();
+
+            newZalba.answer = "";
+            zalbe.push_back(newZalba);
+
+            sacuvajZalbe(zalbe);
+
+            std::cout << "Zalba dodata" << "\n";
+        }
+
+        void rijesiKonflikt()
+        {
+            std::vector<Zalba> zalbe = ucitajZalbe();
+            if (sljedeciID(zalbe) > 1)
+            {
+                prikaziZalbe(zalbe);
+                int id;
+                std::cout << "Unesite broj zalbe koju hocete da rijesite: ";
+                std::cin >> id;
+
+                bool found = false;
+                for (auto it = zalbe.begin(); it != zalbe.end(); ++it) {
+                    if (it->id == id) {
+                        found = true;
+                        std::cout << "To: " << it->email << std::endl;
+                        std::cout << "Unesite odgovor: ";
+                        std::cin.ignore();
+                        std::getline(std::cin, it->answer);
+
+                        zalbe.erase(it);
+                        sacuvajZalbe(zalbe);
+                        std::cout << "Zalba je uspjesno rijesena.\n";
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    std::cout << "Zalba sa ID " << id << " nije pronadjena.\n";
+                }
+            }
+            else {
+                std::cout << "Nema aktivnih zalbi." << std::endl;
+            }
+        }
 };

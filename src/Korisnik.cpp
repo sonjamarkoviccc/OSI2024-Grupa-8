@@ -3,9 +3,8 @@
 #include "UlaznaKartica.h"
 #include "Parking.h"
 #include "Auto.h"
-#include "Konflikt.h"
 #include "Izlaz.h"
-#include "PodnosenjeZalbi.h"
+#include "Konflikt.h"
 
 void park(int spot, const std::string& registracija)
 {
@@ -123,7 +122,7 @@ bool jeNoviDan()
 int main()
 {
     Parking parking(50, "ZONA1");
-    PodnosenjeZalbi zalba;
+    Konflikt konflikt;
 
     std::string izbor;
 
@@ -133,10 +132,10 @@ int main()
         file.close();
     }
 
-    while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "0")
+    while (izbor.empty() || izbor != "1" || izbor != "2" || izbor != "3" || izbor != "0")
     {
-        std::cout << "Slobodnih mjesta je: " << parking.getSlobodnaMjesta() << std::endl;
-        std::cout << "Da li ulazite ili izlazite sa parkinga?\n1. Ulazak\n2. Izlazak\nIzbor: ";
+        std::cout << "\nSlobodnih mjesta je: " << parking.getSlobodnaMjesta() << std::endl;
+        std::cout << "Izaberite opciju:\n1. Ulazak\n2. Izlazak\n3. Podnosenje zalbi\nIzbor: ";
         std::cin >> izbor;
 
         if (izbor == "1")
@@ -166,17 +165,14 @@ int main()
                 std::cout << "Molim Vas unesite tablice: ";
                 std::cin >> tablice;
                 izlaz.pretraziTablicu(tablice, parking);
-                std::string odgovor;
-                std::cout << "Da li imate ikakvih zalbi? (Da/Ne): ";
-                std::cin >> odgovor;
-                if (odgovor == "Da")
-                {
-                    zalba.unesiZalbu();
-                }
             }
             else {
                 std::cout << "Parking je prazan." << std::endl;
             }
+        }
+        else if (izbor == "3")
+        {
+            konflikt.dodajZalbu();
         }
         else if (izbor == "0")
         {

@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdio>
+#include <vector>
 #include "Konflikt.h"
 #include "Nalog.h"
 #include "Parking.h"
@@ -11,8 +12,16 @@ private:
     Nalog nalog;
     Parking parking;
 
+    struct Zalba {
+            int id;
+            std::string text;
+            std::string email;
+            std::string date;
+            std::string answer;
+        };
+
 public:
-    Operater() : konflikt("../files/zalbe.txt"), parking(10, "ZONA1") {}
+    Operater() : parking(10, "ZONA1") {}
 
     void prikazParkiranihVozila()
     {
@@ -22,7 +31,7 @@ public:
 
     void rjesavanjeKonflikta()
     {
-        konflikt.rjesavanjeKonflikta();
+        konflikt.rijesiKonflikt();
     }
 
     int prikaziMogucnostiOperatera()

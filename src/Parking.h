@@ -27,7 +27,7 @@ public:
 
         if (parkingMjesta[brojMjesta] != nullptr)
         {
-            std::cout << "Mjesto " << brojMjesta << "je vec zauzeto." << std::endl;
+            std::cout << "Mjesto " << brojMjesta << " je vec zauzeto." << std::endl;
             return false;
         }
         parkingMjesta[brojMjesta] = autoPtr;
@@ -47,7 +47,7 @@ public:
 
         if (parkingMjesta[mjesto] == nullptr)
         {
-            std::cout << "Mjesto " << mjesto << "je vec slobodno." << std::endl;
+            std::cout << "Mjesto " << mjesto << " je vec slobodno." << std::endl;
             return false;
         }
         parkingMjesta[mjesto] = nullptr;
