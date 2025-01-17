@@ -80,11 +80,57 @@ public:
         std::cout << "Cijena nije pronadjena.\n";
     }
 
+    void prikaziCjenovnik()
+    {
+        for (int i = 0; i < velicina; i++)
+        {
+            std::cout << "Zona: " << cijene[i].zona << " "
+                      << "Dan: " << cijene[i].dan << " "
+                      << "Vrijeme: " << cijene[i].vrijeme << " "
+                      << "Cijena: " << cijene[i].cijena << std::endl;
+        }
+    }
+
+    void azurirajCijenu()
+    {
+        prikaziCjenovnik();
+        std::string uZona, uDan, uVrijeme, uCijena;
+        std::cout << "Unesite podatke cijene koju hocete da promijenite:\n";
+        std::cout << "Zona: ";
+        std::cin >> uZona;
+        std::cout << "Dan: ";
+        std::cin >> uDan;
+        std::cout << "Vrijeme: ";
+        std::cin >> uVrijeme;
+        bool found = false;
+
+        for (int i = 0; i < velicina; i++)
+        {
+            if (cijene[i].zona == uZona && cijene[i].dan == uDan && cijene[i].vrijeme == uVrijeme)
+            {
+                found = true;
+                std::cout << "Unesite novu cijenu: ";
+                std::cin >> uCijena;
+                cijene[i].cijena = uCijena;
+                std::cout << "Cijena uspjesno azurirana.\n";
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            std::cout << "Stavka nije pronadjena.";
+        }
+
+        sacuvajUFajl();
+    }
+
     void prikaziMeni() const {
         std::cout << "\n--- Upravljanje cjenovnikom ---\n"
                   << "1. Postavi cijenu\n"
                   << "2. Pronadji cijenu\n"
-                  << "3. Izlaz\n"
+                  << "3. Azuriraj cijenu\n"
+                  << "4. Izlaz\n"
                   << "Izaberite opciju: ";
     }
 

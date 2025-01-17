@@ -48,8 +48,9 @@ public:
                 std::getline(std::cin, vrijeme);
 
                 cenovnik.nadjiCijenu(zona, dan, vrijeme);
-
-            } else if (izbor != 3) {
+            } else if (izbor == 3){
+                cenovnik.azurirajCijenu();
+            } else if (izbor != 4) {
                 std::cout << "Nepoznata opcija.\n";
             }
         } while (izbor != 3);
