@@ -94,7 +94,6 @@ public:
                     std::string startDatum, endDatum;
                     std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
                     std::cin >> startDatum;
-                    // std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
                     endDatum = sedamDanaKasnije(startDatum);
                     izvestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
                     break;
