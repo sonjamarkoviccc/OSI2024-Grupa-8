@@ -90,8 +90,12 @@ class Konflikt
             std::cin.ignore();
             std::getline(std::cin, newZalba.text);
 
-            std::cout << "Unesite email: ";
-            std::getline(std::cin, newZalba.email);
+            while (newZalba.email.empty() || (newZalba.email.find("@") == std::string::npos) || (newZalba.email.find(".com") == std::string::npos))
+            {
+                std::cout << "Unesite email: ";
+                std::cin.ignore();
+                std::getline(std::cin, newZalba.email);
+            }
 
             newZalba.date = danasnjiDatum();
 

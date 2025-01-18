@@ -53,7 +53,7 @@ public:
             } else if (izbor != 4) {
                 std::cout << "Nepoznata opcija.\n";
             }
-        } while (izbor != 3);
+        } while (izbor != 4);
     }
     void izvjestajORadu(Izvjestaj& izvestaj)
     {
