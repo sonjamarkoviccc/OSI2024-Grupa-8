@@ -13,6 +13,26 @@ class Uprava
 private:
     UpravljanjeNalozima upravljanjeNalozima;
 
+    std::string sedamDanaKasnije(const std::string& date_str)
+    {
+        std::tm date = {};
+        std::istringstream ss(date_str);
+        ss >> std::get_time(&date, "%d.%m.%Y");
+        
+        if (ss.fail()) {
+            throw std::invalid_argument("Nije validan datum");
+        }
+
+        std::time_t time = std::mktime(&date);
+        time += 7 * 24 * 60 * 60;
+
+        std::tm* new_date = std::localtime(&time);
+        std::ostringstream os;
+        os << std::put_time(new_date, "%d.%m.%Y");
+        return os.str();
+    }
+
+
 public:
     Uprava() {}
     ~Uprava() {}
@@ -74,8 +94,8 @@ public:
                     std::string startDatum, endDatum;
                     std::cout << "Unesite pocetni datum (DD.MM.YYYY): ";
                     std::cin >> startDatum;
-                    std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
-                    std::cin >> endDatum;
+                    // std::cout << "Unesite krajnji datum (DD.MM.YYYY): ";
+                    endDatum = sedamDanaKasnije(startDatum);
                     izvestaj.generisiNedeljniIzvjestaj(startDatum, endDatum);
                     break;
                 }
