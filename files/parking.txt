@@ -39,12 +39,12 @@ Mjesto 37 : slobodno
 Mjesto 38 : slobodno
 Mjesto 39 : slobodno
 Mjesto 40 : slobodno
-Mjesto 41 : slobodno
+Mjesto 41 : zauzeto (registracija: GO9-E3)
 Mjesto 42 : slobodno
-Mjesto 43 : slobodno
+Mjesto 43 : zauzeto (registracija: WB44H)
 Mjesto 44 : slobodno
 Mjesto 45 : slobodno
-Mjesto 46 : slobodno
+Mjesto 46 : zauzeto (registracija: QBP7M)
 Mjesto 47 : slobodno
 Mjesto 48 : slobodno
 Mjesto 49 : slobodno
